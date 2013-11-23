@@ -7,69 +7,23 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
-
-    <TextView
-        android:id="@+id/textView_Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"
-        android:text="Login Page: NFC Tag"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
     
-    <LinearLayout android:orientation="horizontal"
+    <LinearLayout
         android:id="@+id/layout_username"
-    	android:layout_width="fill_parent"
-    	android:layout_below="@+id/textView_Title"
-    	android:layout_height="wrap_content">
-	    <TextView
-	        android:id="@+id/textView_Username"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-			android:layout_weight="1.4"
-	        android:text="USERNAME" />
-	
-	    <EditText
-	        android:id="@+id/editText_Username"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight=".6"
-	        android:ems="10" >
-        	<requestFocus />
-    	</EditText>
-    </LinearLayout>
-    
-    <LinearLayout android:orientation="horizontal"
-        android:id="@+id/layout_password"
-    	android:layout_width="fill_parent"
-    	android:layout_below="@+id/layout_username"
-    	android:layout_height="wrap_content">
-	    <TextView
-	        android:id="@+id/textView_Password"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-			android:layout_weight="1.4"
-	        android:text="PASSWORD" />
-	
-	    <EditText
-	        android:id="@+id/editText_Password"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight=".6"
-	        android:inputType="textPassword"
-	        android:ems="10" >
-        	<requestFocus />
-    	</EditText>
-    </LinearLayout>
-    
-    <Button 
-	        android:id="@+id/button_Login"
-	        android:layout_below ="@+id/layout_password"
-	 		android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:text="LOGIN/REGISTER" />
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_Login"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/layout_username"
+        android:layout_below="@+id/layout_username"
+        android:layout_marginTop="133dp"
+        android:layout_weight="1"
+        android:text="Link to Dropbox" />
 
 </RelativeLayout>

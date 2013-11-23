@@ -20,11 +20,10 @@ import android.widget.TextView;
 @SuppressWarnings("deprecation")
 public class WelcomeActivity extends TabActivity {
 
-	
 	private TabHost mTabHost;
 	private Button logout;
 	private WelcomeActivity welcomeActivityHelper;
-	
+		
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
@@ -52,8 +51,10 @@ public class WelcomeActivity extends TabActivity {
 			@Override
 			public void onClick(View v) {
 				//Later add error checking 
+				DropboxSession.getInstance(welcomeActivityHelper).logOut();
 				Intent intentToMain = new Intent(welcomeActivityHelper, MainActivity.class);
 				welcomeActivityHelper.startActivity(intentToMain);
+				finish();
 			
 			}
 		});
