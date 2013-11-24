@@ -24,7 +24,7 @@ public class EncryptActivity extends Activity {
 	static final String APP_KEY = "1p4kimx81tdhsce";
     static final int DBX_CHOOSER_REQUEST = 0; 
 	private static final int FILE_SELECT_CODE = 0;
-	private String fileDown = "/Photos/GT%20vs%20VT.pdf";
+	private String fileDown = "/Photos/2013-11-18-23-32-30.jpg";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class EncryptActivity extends Activity {
 					DbxChooser.Result result = new DbxChooser.Result(data);	                
 	                showLink(R.id.textView_output, result.getLink());
 	                
-	                DBDownloadTask dbDown = new DBDownloadTask(this.getApplicationContext(),fileDown);
+	                DBDownloadTask dbDown = new DBDownloadTask(EncryptActivity.this,fileDown);
 	                dbDown.execute();
 //					Uri uri = data.getData();
 ////					output.append(uri.toString());

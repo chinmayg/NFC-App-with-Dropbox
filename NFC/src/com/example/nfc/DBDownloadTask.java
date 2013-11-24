@@ -61,12 +61,6 @@ public class DBDownloadTask extends AsyncTask<Void, Long, Boolean> {
             // Get the metadata for a directory
             Entry file = mApi.metadata(mPath, 1000, null, true, null);
 
-            if (!file.isDir || file.contents == null) {
-                // It's not a directory, or there's nothing in it
-                mErrorMsg = "File or empty directory";
-                return false;
-            }
-
             String path = file.path;
             mFileLen = file.bytes;
 
