@@ -21,10 +21,10 @@ public class EncryptActivity extends Activity {
 
 	private Button openFile;
 	private DbxChooser mChooser;
-	static final String APP_KEY = "1p4kimx81tdhsce"; /* This is for you to fill in! */;
-    static final int DBX_CHOOSER_REQUEST = 0;  // You can change this if needed
-
+	static final String APP_KEY = "1p4kimx81tdhsce";
+    static final int DBX_CHOOSER_REQUEST = 0; 
 	private static final int FILE_SELECT_CODE = 0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,8 +36,7 @@ public class EncryptActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				//showFileChooser();
-				mChooser.forResultType(DbxChooser.ResultType.PREVIEW_LINK).launch(EncryptActivity.this,DBX_CHOOSER_REQUEST );
-					
+				mChooser.forResultType(DbxChooser.ResultType.DIRECT_LINK).launch(EncryptActivity.this,DBX_CHOOSER_REQUEST );
 			}
 		});
 	}
