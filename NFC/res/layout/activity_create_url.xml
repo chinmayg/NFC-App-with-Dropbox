@@ -23,4 +23,13 @@
         android:layout_marginTop="20dp"
         android:text="OpenFile" />
 
+    <TextView
+        android:id="@+id/textView_output"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_openFile"
+        android:layout_below="@+id/button_openFile"
+        android:layout_marginTop="34dp"
+        android:text="TextView" />
+
 </RelativeLayout>
