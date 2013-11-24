@@ -1,3 +1,12 @@
+/*
+ * Created by Chinmay Ghotkar
+ * Date Modified:11/24/2013
+ * 
+ *This source file creates a single instance of the Dropbox Authentication Session. 
+ *It follows the Singleton Design pattern, so that only one instance of DropboxSession class
+ *is created
+ *
+*/
 package com.example.nfc;
 
 import android.app.Activity;
@@ -45,7 +54,16 @@ public class DropboxSession {
 	private static final String TAG = "DBSession";
 	private static DropboxSession INSTANCE = null;
 
-	static DropboxAPI<AndroidAuthSession> mApi;
+	static DropboxAPI<AndroidAuthSession> mApi
+	;
+	public static DropboxAPI<AndroidAuthSession> getApi() {
+		return mApi;
+	}
+
+	public static void setmApi(DropboxAPI<AndroidAuthSession> Api) {
+		DropboxSession.mApi = Api;
+	}
+
 	private static Activity mParentActivity;
 	
 	public static DropboxSession getInstance(Activity parent){
