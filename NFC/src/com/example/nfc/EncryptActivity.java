@@ -1,88 +1,107 @@
 package com.example.nfc;
 
-import java.io.File;
 import java.net.URISyntaxException;
 
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-import encyrption.*;
+
+import com.dropbox.chooser.android.DbxChooser;
 
 public class EncryptActivity extends Activity {
 
 	private Button openFile;
-	private TextView output;
+	private DbxChooser mChooser;
+	static final String APP_KEY = "1p4kimx81tdhsce"; /* This is for you to fill in! */;
+    static final int DBX_CHOOSER_REQUEST = 0;  // You can change this if needed
+
 	private static final int FILE_SELECT_CODE = 0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_encrypt);
+		
+        mChooser = new DbxChooser(APP_KEY);
 		this.openFile = (Button)findViewById(R.id.button_openFile);
-		this.output = (TextView) findViewById(R.id.textView_output);
 		this.openFile.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				showFileChooser(); 
+				//showFileChooser();
+				mChooser.forResultType(DbxChooser.ResultType.PREVIEW_LINK).launch(EncryptActivity.this,DBX_CHOOSER_REQUEST );
 					
 			}
 		});
 	}
 	
-	private void showFileChooser(){
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-		intent.setType("*/*"); 
-		intent.addCategory(Intent.CATEGORY_OPENABLE);
-		
-		try {
-	        startActivityForResult(
-	                Intent.createChooser(intent, "Select a File to Upload"),
-	                FILE_SELECT_CODE);
-	    } catch (android.content.ActivityNotFoundException ex) {
-	        // Potentially direct the user to the Market with a Dialog
-	        Toast.makeText(this, "Please install a File Manager.", 
-	                Toast.LENGTH_SHORT).show();
-	    }
-		
-	}
+//	private void showFileChooser(){
+//		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//		intent.setType("*/*"); 
+//		intent.addCategory(Intent.CATEGORY_OPENABLE);
+//		
+//		try {
+//	        startActivityForResult(
+//	                Intent.createChooser(intent, "Select a File to Upload"),
+//	                FILE_SELECT_CODE);
+//	    } catch (android.content.ActivityNotFoundException ex) {
+//	        // Potentially direct the user to the Market with a Dialog
+//	        Toast.makeText(this, "Please install a File Manager.", 
+//	                Toast.LENGTH_SHORT).show();
+//	    }	
+//	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch(requestCode){
 			case FILE_SELECT_CODE:
 				if(resultCode == RESULT_OK){
-					Uri uri = data.getData();
-//					output.append(uri.toString());
-//					output.append("\n");
-					try {
-						String path = getPath(this,uri);
-						output.append(path);
-						EncryptionHelper encryptor = new EncryptionHelper(10);
-						String key = encryptor.encrypt(path, "storage/emulated/0/Android/data/com.dropbox.android/files/scratch/test.txt");
-						output.append(key);
-						
-//						File file = new File(path);
-//						output.append(file.getName());
-//						output.append("\n\n");
-//						output.append(file.toString());
-						//output.append(getPath(this,uri));
-					} catch (URISyntaxException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 					
+					DbxChooser.Result result = new DbxChooser.Result(data);	                
+	                showLink(R.id.textView_output, result.getLink());
+	                
+	                
+//					Uri uri = data.getData();
+////					output.append(uri.toString());
+////					output.append("\n");
+//					try {
+//						String path = getPath(this,uri);
+//						output.append(path);
+//						EncryptionHelper encryptor = new EncryptionHelper(10);
+//						String key = encryptor.encrypt(path, "storage/emulated/0/Android/data/com.dropbox.android/files/scratch/test.txt");
+//						output.append(key);
+//						
+////						File file = new File(path);
+////						output.append(file.getName());
+////						output.append("\n\n");
+////						output.append(file.toString());
+//						//output.append(getPath(this,uri));
+//					} catch (URISyntaxException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					
 				}
 			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
+	
+    private void showLink(int id, Uri uri) {
+        TextView v = (TextView) findViewById(id);
+        if (uri == null) {
+            v.setText("", TextView.BufferType.NORMAL);
+            return;
+        }
+        v.setText(uri.toString(), TextView.BufferType.NORMAL);
+        v.setMovementMethod(LinkMovementMethod.getInstance());
+    }
 	
 	public static String getPath(Context context, Uri uri) throws URISyntaxException {
 	    if ("content".equalsIgnoreCase(uri.getScheme())) {

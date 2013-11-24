@@ -5,7 +5,6 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.view.Menu;
@@ -14,8 +13,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.Toast;
-import android.widget.TabHost.TabSpec;
-import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
 public class WelcomeActivity extends TabActivity {
