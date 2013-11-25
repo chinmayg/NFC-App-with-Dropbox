@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.ProgressListener;
 import com.dropbox.client2.DropboxAPI.DropboxFileInfo;
 import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
@@ -50,6 +51,9 @@ public class DBDownloadTask extends AsyncTask<Void, Long, Boolean> {
         mPath = dropboxPath;
 
         mDialog = new ProgressDialog(context);
+        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mDialog.setProgress(0);
+        mDialog.setMax(100);
         mDialog.setMessage("Downloading File");
  
         mDialog.show();
@@ -74,7 +78,18 @@ public class DBDownloadTask extends AsyncTask<Void, Long, Boolean> {
                 return false;
             }
 
-            DropboxFileInfo info = mApi.getFile(path, null, mFos, null);
+            DropboxFileInfo info = mApi.getFile(path, null, mFos, new ProgressListener() {
+                @Override
+                public long progressInterval() {
+                    // Update the progress bar every half-second or so
+                    return 100;
+                }
+
+                @Override
+                public void onProgress(long bytes, long total) {
+                    publishProgress(bytes);
+                }
+            });
             Log.i(TAG, "The file's download is: " + info.getFileSize() + " " + cachePath);
 
             return true;

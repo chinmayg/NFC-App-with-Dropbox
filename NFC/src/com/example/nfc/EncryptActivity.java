@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +26,8 @@ public class EncryptActivity extends Activity {
     static final int DBX_CHOOSER_REQUEST = 0; 
 	private static final int FILE_SELECT_CODE = 0;
 	private String fileDown = "/Photos/2013-11-18-23-32-30.jpg";
+	private static final String TAG = "DBUpload";
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,8 @@ public class EncryptActivity extends Activity {
 					
 					DbxChooser.Result result = new DbxChooser.Result(data);	                
 	                showLink(R.id.textView_output, result.getLink());
-	                
+	                fileDown = result.getLink().toString().substring(56);
+	                Log.i(TAG, "The file's download is: " + fileDown);
 	                DBDownloadTask dbDown = new DBDownloadTask(EncryptActivity.this,fileDown);
 	                dbDown.execute();
 //					Uri uri = data.getData();
