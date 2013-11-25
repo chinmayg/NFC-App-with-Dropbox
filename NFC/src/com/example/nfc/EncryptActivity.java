@@ -25,7 +25,7 @@ public class EncryptActivity extends Activity {
 	static final String APP_KEY = "1p4kimx81tdhsce";
     static final int DBX_CHOOSER_REQUEST = 0; 
 	private static final int FILE_SELECT_CODE = 0;
-	private String fileDown = "/Photos/2013-11-18-23-32-30.jpg";
+	private String fileDown = "";
 	private static final String TAG = "DBUpload";
 
 	
@@ -39,27 +39,10 @@ public class EncryptActivity extends Activity {
 		this.openFile.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//showFileChooser();
 				mChooser.forResultType(DbxChooser.ResultType.DIRECT_LINK).launch(EncryptActivity.this,DBX_CHOOSER_REQUEST );
 			}
 		});
 	}
-	
-//	private void showFileChooser(){
-//		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//		intent.setType("*/*"); 
-//		intent.addCategory(Intent.CATEGORY_OPENABLE);
-//		
-//		try {
-//	        startActivityForResult(
-//	                Intent.createChooser(intent, "Select a File to Upload"),
-//	                FILE_SELECT_CODE);
-//	    } catch (android.content.ActivityNotFoundException ex) {
-//	        // Potentially direct the user to the Market with a Dialog
-//	        Toast.makeText(this, "Please install a File Manager.", 
-//	                Toast.LENGTH_SHORT).show();
-//	    }	
-//	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch(requestCode){
@@ -69,6 +52,7 @@ public class EncryptActivity extends Activity {
 					DbxChooser.Result result = new DbxChooser.Result(data);	                
 	                showLink(R.id.textView_output, result.getLink());
 	                fileDown = result.getLink().toString().substring(56);
+	                fileDown = fileDown.replace("%20", " ");
 	                Log.i(TAG, "The file's download is: " + fileDown);
 	                DBDownloadTask dbDown = new DBDownloadTask(EncryptActivity.this,fileDown);
 	                dbDown.execute();
