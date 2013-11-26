@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Random;
+
 import org.apache.commons.lang.RandomStringUtils;
 
 // -------------------------------------------------------------------------
@@ -55,8 +57,15 @@ public class EncryptionHelper
      */
     private String genKey()
     {
+    	Random r = new Random();
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < getKeyLength(); i++) {
+            char c = (char)(r.nextInt(94) + 33);
+            sb.append(c);
+        }
+        return sb.toString();
         //return RandomStringUtils.randomAlphanumeric(keyLength_);
-    	return "roy";
+    	//return "roy";
     }
 
     // ----------------------------------------------------------

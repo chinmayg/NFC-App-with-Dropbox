@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -35,6 +36,7 @@ public class DBUploadTask extends AsyncTask<Void, Long, Boolean>{
 	private DropboxAPI<?> mApi;
     private String mPath;
     private File mFile;
+    private Activity dispActivity;
 
     private long mFileLen;
     private UploadRequest mRequest;
@@ -44,10 +46,10 @@ public class DBUploadTask extends AsyncTask<Void, Long, Boolean>{
     private String mErrorMsg;
 
 
-    public DBUploadTask(Context context, String dropboxPath, File file) {
+    public DBUploadTask(Context context, String dropboxPath, File file, Activity displayer) {
         // We set the context this way so we don't accidentally leak activities
         mContext = context.getApplicationContext();
-
+        dispActivity = displayer;
         mFileLen = file.length();
         mApi = DropboxSession.getApi();
         mPath = dropboxPath;
@@ -140,7 +142,7 @@ public class DBUploadTask extends AsyncTask<Void, Long, Boolean>{
     protected void onPostExecute(Boolean result) {
         mDialog.dismiss();
         if (result) {
-            showToast("File successfully uploaded");
+            showToast("File successfully uploaded, Program NFC with key!");
         } else {
             showToast(mErrorMsg);
         }
