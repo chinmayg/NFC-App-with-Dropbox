@@ -6,8 +6,9 @@
 
 	<uses-permission android:name="android.permission.INTERNET" /> 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="10"
         android:targetSdkVersion="17" />
+    <uses-permission android:name="android.permission.NFC"/>
 
     <application
         android:allowBackup="true"
@@ -62,7 +63,7 @@
             android:label="@string/title_activity_change_setting" >
         </activity>
         <activity
-            android:name="com.example.nfc.ReadTagActivity"
+            android:name="com.example.nfc.DecryptActivity"
             android:label="@string/title_activity_read_tag" >
         </activity>
     </application>

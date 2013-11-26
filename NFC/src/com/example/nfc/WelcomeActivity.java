@@ -101,7 +101,7 @@ public class WelcomeActivity extends TabActivity {
 		mTabHost.addTab(spec);
 		
 		//Read Tag Tab
-		intent = new Intent(this,ReadTagActivity.class);
+		intent = new Intent(this,DecryptActivity.class);
 		intent.putExtra("nfcData", nfcData);
 		spec = mTabHost.newTabSpec("readTag").setIndicator("Read Tag")
 				.setContent(intent);
