@@ -18,6 +18,14 @@
 	        android:layout_alignParentBottom="true"
 	        android:text="LOGOUT" />
     
+    <Button
+                android:id="@+id/buttonWrite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+				android:layout_above="@+id/button_Logout"
+				android:layout_below="@+id/tabcontent"
+                android:text="Programm NFC" />
+    
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
@@ -39,9 +47,12 @@
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="326dp"
+                android:layout_above="@+id/buttonWrite" >
+
             </FrameLayout>
         </LinearLayout>
+
     </TabHost>
 
 </RelativeLayout>
