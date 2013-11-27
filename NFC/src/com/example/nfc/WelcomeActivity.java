@@ -251,12 +251,6 @@ public class WelcomeActivity extends TabActivity {
 		spec = mTabHost.newTabSpec("changeSetting").setIndicator("Change Setting")
 				.setContent(intent);
 		mTabHost.addTab(spec);
-		
-		//Read Tag Tab
-		intent = new Intent(this,ReadTagActivity.class);
-		spec = mTabHost.newTabSpec("readTag").setIndicator("Read Tag")
-				.setContent(intent);
-		mTabHost.addTab(spec);
 	}
 	
 	/**

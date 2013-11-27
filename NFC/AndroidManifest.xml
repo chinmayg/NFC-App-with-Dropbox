@@ -54,11 +54,6 @@
             android:label="@string/title_activity_change_setting" >
         </activity>
         
-        <activity
-            android:name="com.example.nfc.ReadTagActivity"
-            android:label="@string/title_activity_read_tag" >
-        </activity>
-        
     </application>
 
 </manifest>
