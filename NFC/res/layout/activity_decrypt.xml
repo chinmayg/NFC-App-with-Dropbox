@@ -6,30 +6,32 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".EncryptActivity" >
+    tools:context=".DecryptActivity" >
+
+    <Button
+        android:id="@+id/doneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="116dp"
+        android:text="Return" />
+
+    <Button
+        android:id="@+id/readB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Read File" />
 
     <TextView
         android:id="@+id/fileOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Encrypt" />
-
-    <Button
-        android:id="@+id/button_openFile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/fileOut"
-        android:layout_below="@+id/fileOut"
-        android:layout_marginTop="30dp"
-        android:text="OpenFile" />
-
-    <TextView
-        android:id="@+id/textView_output"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button_openFile"
-        android:layout_below="@+id/button_openFile"
-        android:layout_marginTop="38dp"
-        android:text="TextView" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" />
 
 </RelativeLayout>

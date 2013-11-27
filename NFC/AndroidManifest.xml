@@ -7,7 +7,7 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="18" />
-
+	
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -71,6 +71,10 @@
         <activity
             android:name="com.example.nfc.ChangeSettingActivity"
             android:label="@string/title_activity_change_setting" >
+        </activity>
+        <activity
+            android:name="com.example.nfc.DecryptActivity"
+            android:label="@string/title_activity_decrypt" >
         </activity>
     </application>
 

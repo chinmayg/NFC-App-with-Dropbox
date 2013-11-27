@@ -1,5 +1,6 @@
 package com.example.nfc;
 
+import java.io.File;
 import java.net.URISyntaxException;
 
 import android.app.Activity;
@@ -15,10 +16,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dropbox.chooser.android.DbxChooser;
 
-public class EncryptActivity extends Activity {
+import encyrption.EncryptionHelper;
+import encyrption.Security;
+
+public class EncryptActivity extends Activity implements Security {
 
 	private Button openFile;
 	private DbxChooser mChooser;
@@ -27,7 +32,7 @@ public class EncryptActivity extends Activity {
 	private static final int FILE_SELECT_CODE = 0;
 	private String fileDown = "";
 	private static final String TAG = "DBUpload";
-	
+
 	private TextView out;
 
 	@Override
@@ -52,13 +57,13 @@ public class EncryptActivity extends Activity {
 		case FILE_SELECT_CODE:
 			if (resultCode == RESULT_OK) {
 
-				DbxChooser.Result result = new DbxChooser.Result(data);				
+				DbxChooser.Result result = new DbxChooser.Result(data);
 				fileDown = result.getLink().toString().substring(56);
 				fileDown = fileDown.replace("%20", " ");
 				Log.i(TAG, "The file's download is: " + fileDown);
 				DBDownloadTask dbDown = new DBDownloadTask(
-						EncryptActivity.this, fileDown, "DesiBoy'zAppUploads/", EncryptActivity.this);
-				dbDown.execute(true);
+						EncryptActivity.this, fileDown, EncryptActivity.this);
+				dbDown.execute();
 				// Uri uri = data.getData();
 				// // output.append(uri.toString());
 				// // output.append("\n");
@@ -84,6 +89,22 @@ public class EncryptActivity extends Activity {
 			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	public void handleSecurity(String fileLoc, String fileName) {
+		String dest = this.getCacheDir().getAbsolutePath() + "/" + "encrypted"
+				+ fileName;
+		EncryptionHelper helper = new EncryptionHelper(10);
+		String key = helper.encrypt(fileLoc, dest);
+		dispString("Please Program NFC with key: " + key);
+		Toast error = Toast.makeText(this, key, Toast.LENGTH_LONG);
+		error.show();
+		// upload file at destination
+		String DBPath = "AppUploads/";
+		DBUploadTask up = new DBUploadTask(this, DBPath, new File(dest));
+		up.execute();
+		
+		// Program NFC tag with DBPath and key
 	}
 
 	public void dispString(String message) {

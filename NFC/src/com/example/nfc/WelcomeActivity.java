@@ -89,17 +89,11 @@ public class WelcomeActivity extends TabActivity {
 	        
 	        String subString = nfcData.substring(0, first);
 	        
-	        //Tag contains data for encryption activity
-	        if(subString.contains("EA")){
-	        	intent = new Intent(this,EncryptActivity.class);
+	        //Tag contains data for decryption activity
+	        if(subString.contains("D")){
+	        	intent = new Intent(this,DecryptActivity.class);
 	    		intent.putExtra("nfcData", nfcData);
 	    		WelcomeActivity.this.startActivity(intent);
-	        }
-	        //Tag contains data for decrypt activity
-	        else if(subString.contains("DA")){
-	        //	intent = new Intent(this,EncryptActivity.class);
-	    	//	intent.putExtra("nfcData", nfcData);
-	    	//	WelcomeActivity.this.startActivity(intent);
 	        }
 	        //Tag contains data for create url activity
 	        else if(subString.contains("CUA")){

@@ -10,5 +10,6 @@
     <string name="title_activity_create_url">CreateURLActivity</string>
     <string name="title_activity_change_setting">ChangeSettingActivity</string>
     <string name="title_activity_read_tag">ReadTagActivity</string>
+    <string name="title_activity_decrypt">DecryptActivity</string>
 
 </resources>

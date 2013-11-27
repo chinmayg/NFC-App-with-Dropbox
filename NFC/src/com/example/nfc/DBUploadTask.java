@@ -36,7 +36,6 @@ public class DBUploadTask extends AsyncTask<Void, Long, Boolean>{
 	private DropboxAPI<?> mApi;
     private String mPath;
     private File mFile;
-    private Activity dispActivity;
 
     private long mFileLen;
     private UploadRequest mRequest;
@@ -46,10 +45,9 @@ public class DBUploadTask extends AsyncTask<Void, Long, Boolean>{
     private String mErrorMsg;
 
 
-    public DBUploadTask(Context context, String dropboxPath, File file, Activity displayer) {
+    public DBUploadTask(Context context, String dropboxPath, File file) {
         // We set the context this way so we don't accidentally leak activities
         mContext = context.getApplicationContext();
-        dispActivity = displayer;
         mFileLen = file.length();
         mApi = DropboxSession.getApi();
         mPath = dropboxPath;

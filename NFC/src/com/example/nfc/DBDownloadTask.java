@@ -34,10 +34,12 @@ import com.dropbox.client2.exception.DropboxServerException;
 import com.dropbox.client2.exception.DropboxUnlinkedException;
 
 import encyrption.EncryptionHelper;
+import encyrption.Security;
 
 public class DBDownloadTask extends AsyncTask<Boolean, Long, Boolean> {
 
-	private Activity displayActivity;
+	private Security invokingActivity;
+	
 	private Context mContext;
 	private Context eContext;
 	private final ProgressDialog mDialog;
@@ -50,18 +52,14 @@ public class DBDownloadTask extends AsyncTask<Boolean, Long, Boolean> {
 	private Long mFileLen;
 	private String mErrorMsg;
 
-	private boolean mdoEncryption = true;
-	private String uploadPath;
-
-	public DBDownloadTask(Context context, String dropboxPath, String upload, Activity p) {
+	public DBDownloadTask(Context context, String dropboxPath, Security invoker) {
 		// We set the context this way so we don't accidentally leak activities
 		mContext = context.getApplicationContext();
 		eContext = context;
-		displayActivity = p;
+		invokingActivity = invoker;
 		mApi = DropboxSession.getApi();
-		mPath = dropboxPath;
-		uploadPath = upload;
-
+		mPath = dropboxPath;	
+		
 		mDialog = new ProgressDialog(context);
 		mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mDialog.setProgress(0);
@@ -74,8 +72,6 @@ public class DBDownloadTask extends AsyncTask<Boolean, Long, Boolean> {
 	@Override
 	protected Boolean doInBackground(Boolean... params) {
 		try {
-			mdoEncryption = params[0];
-
 			// Get the metadata for a directory
 			Entry file = mApi.metadata(mPath, 1000, null, true, null);
 
@@ -165,23 +161,10 @@ public class DBDownloadTask extends AsyncTask<Boolean, Long, Boolean> {
 		// mDialog.dismiss();
 		mDialog.cancel();
 		if (result) {
-			if (mdoEncryption) {// Encrypt file and upload it
-								// file downloaded as mPath
-				int lastForwardSlash = mPath.lastIndexOf('/');
-				String source = mContext.getCacheDir().getAbsolutePath()
-						+ mPath.substring(lastForwardSlash);				
-				String dest = mContext.getCacheDir().getAbsolutePath() + "/"
-						+ "encrypted" + mPath.substring(lastForwardSlash + 1) + ".txt";
-				EncryptionHelper helper = new EncryptionHelper(10);
-				String key = helper.encrypt(source, dest);
-				((EncryptActivity)displayActivity).dispString("Please Program NFC with key: " + key);
-				showToast(key);
-				// upload file at destination
-				DBUploadTask up = new DBUploadTask(eContext, uploadPath,
-						new File(dest), displayActivity);
-				up.execute();
-			}
-
+			int lastForwardSlash = mPath.lastIndexOf('/');
+			String source = mContext.getCacheDir().getAbsolutePath()
+					+ mPath.substring(lastForwardSlash);
+			invokingActivity.handleSecurity(source, mPath.substring(lastForwardSlash));
 		} else {
 			// Couldn't download it, so show an error
 			showToast(mErrorMsg);
