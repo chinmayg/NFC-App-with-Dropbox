@@ -96,18 +96,18 @@ public class WelcomeActivity extends TabActivity {
 	    		WelcomeActivity.this.startActivity(intent);
 	        }
 	        //Tag contains data for decrypt activity
-	        else if(subString.contains("DA:")){
+	        else if(subString.contains("DA")){
 	        //	intent = new Intent(this,EncryptActivity.class);
 	    	//	intent.putExtra("nfcData", nfcData);
 	    	//	WelcomeActivity.this.startActivity(intent);
 	        }
 	        //Tag contains data for create url activity
-	        else if(subString.contains("CUA:")){
+	        else if(subString.contains("CUA")){
 	        	//mTabHost.setCurrentTab(1);
 	        }
 	        
 	        //Tag contains data for change settings activity
-	        else if(subString.contains("CSA:")){
+	        else if(subString.contains("CSA")){
 	        	//mTabHost.setCurrentTab(2);
 	        }
 	        
