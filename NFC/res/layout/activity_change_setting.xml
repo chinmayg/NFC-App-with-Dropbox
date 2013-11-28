@@ -14,14 +14,10 @@
         android:layout_height="wrap_content"
         android:text="Chagen Settings" />
 
-    <ListView
-        android:id="@+id/listView1"
+    <ExpandableListView
+        android:id="@+id/lvExp"
+        android:layout_below="@+id/fileOut"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/fileOut" >
-
-    </ListView>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

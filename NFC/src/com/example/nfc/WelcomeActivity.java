@@ -245,6 +245,7 @@ public class WelcomeActivity extends TabActivity {
 		spec = mTabHost.newTabSpec("changeSetting").setIndicator("Change Setting")
 				.setContent(intent);
 		mTabHost.addTab(spec);
+		
 	}
 	
 	/**

@@ -11,5 +11,6 @@
     <string name="title_activity_change_setting">ChangeSettingActivity</string>
     <string name="title_activity_read_tag">ReadTagActivity</string>
     <string name="title_activity_decrypt">DecryptActivity</string>
+    <string name="title_activity_refresh_screen">RefreshScreen</string>
 
 </resources>

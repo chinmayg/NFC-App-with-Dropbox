@@ -7,11 +7,14 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="18" />
-	
+
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -75,6 +78,10 @@
         <activity
             android:name="com.example.nfc.DecryptActivity"
             android:label="@string/title_activity_decrypt" >
+        </activity>
+        <activity
+            android:name="com.example.nfc.RefreshScreen"
+            android:label="@string/title_activity_refresh_screen" >
         </activity>
     </application>
 
