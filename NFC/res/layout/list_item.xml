@@ -7,10 +7,10 @@
     <TextView
         android:id="@+id/lblListItem"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
+        android:layout_height="35dp"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
+        android:textSize="15dp" 
         android:paddingTop="5dp"
-        android:textSize="17dip" />
+        android:paddingBottom="5dp"/>
 
 </LinearLayout>

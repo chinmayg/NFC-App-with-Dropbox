@@ -6,15 +6,20 @@ import java.util.List;
 
 import android.media.AudioManager;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiConfiguration.AuthAlgorithm;
+import android.net.wifi.WifiConfiguration.KeyMgmt;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ExpandableListView;
@@ -34,22 +39,30 @@ public class ChangeSettingActivity extends Activity {
 	List<String> listDataHeader;
 	HashMap<String, List<String>> listDataChild;
 
+	private String mSSID = "";
+	private String mPassword = "";
+	private String mSecurityType = "";
+
+	private List<WifiConfiguration> mConnections;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_change_setting);
 
+		// testConnection();
+
 		// get the listview
-		this.expListView = (ExpandableListView) findViewById(R.id.lvExp);
+		expListView = (ExpandableListView) findViewById(R.id.lvExp);
 
 		// preparing list data
 		prepareListData();
 
-		this.listAdapter = new ExpandableListAdapter(this, listDataHeader,
+		listAdapter = new ExpandableListAdapter(this, listDataHeader,
 				listDataChild);
 
 		// setting list adapter
-		this.expListView.setAdapter(listAdapter);
+		expListView.setAdapter(listAdapter);
 
 		// Listview on child click listener
 		expListView.setOnChildClickListener(new OnChildClickListener() {
@@ -57,14 +70,6 @@ public class ChangeSettingActivity extends Activity {
 			@Override
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {
-				Toast.makeText(
-						getApplicationContext(),
-						listDataHeader.get(groupPosition)
-								+ " : "
-								+ listDataChild.get(
-										listDataHeader.get(groupPosition)).get(
-										childPosition), Toast.LENGTH_SHORT)
-						.show();
 
 				if (listDataHeader.get(groupPosition).trim().equals("Audio")) {
 					changeAudio(listDataChild
@@ -80,93 +85,88 @@ public class ChangeSettingActivity extends Activity {
 					changeDisplay(listDataChild
 							.get(listDataHeader.get(groupPosition))
 							.get(childPosition).trim());
+				} else if (listDataHeader.get(groupPosition).trim()
+						.equals("Wifi")) {
+					mSSID = listDataChild
+							.get(listDataHeader.get(groupPosition))
+							.get(childPosition).trim();
+					mSecurityType = passwordType(mConnections.get(childPosition));
+					if(mSecurityType != "OPEN")
+						getWiFiPasswordFromUser(mSSID);
 				}
 				return false;
 			}
 		});
-
-		/*
-		 * mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		 * 
-		 * if(mWifiManager == null) Toast.makeText(this,
-		 * "No Wifi Manager found!", Toast.LENGTH_SHORT).show(); else {
-		 * List<WifiConfiguration> connections =
-		 * mWifiManager.getConfiguredNetworks(); ArrayList<String>
-		 * connectionInfo = new ArrayList<String>();
-		 * 
-		 * for(int i = 0; i < connections.size(); i++)
-		 * connectionInfo.add(connections.get(i).SSID.replace("\"", ""));
-		 * 
-		 * ListView listView = (ListView) findViewById(R.id.listView_Main);
-		 * 
-		 * ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-		 * this,android.R.layout.simple_list_item_1, connectionInfo);
-		 * 
-		 * listView.setAdapter(arrayAdapter); }
-		 */
 	}
 
-	/*
-	 * Change Audio Settings
+	@Override
+	protected void onResume() {
+		super.onResume();
+		prepareListData();
+	}
+	
+	/**
+	 * This method changes the Audio Settings
+	 * @param mode
 	 */
 	private void changeAudio(String mode) {
 		AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
 		if (mode.equals("Normal")) {
 			am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-			Toast.makeText(this, "Phone Set to Normal Mode", Toast.LENGTH_SHORT)
-					.show();
+			toast("Phone Set to Normal Mode");
 		} else if (mode.equals("Silent")) {
 			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-			Toast.makeText(this, "Phone Set to Silent Mode", Toast.LENGTH_SHORT)
-					.show();
+			toast("Phone Set to Silent Mode");
 		} else {
 			am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-			Toast.makeText(this, "Phone Set to Vibrate Mode",
-					Toast.LENGTH_SHORT).show();
+			toast("Phone Set to Vibrate Mode");
 		}
 
 	}
 
-	/*
-	 * Changes Bluetooth Settings
+	/**
+	 * This method changes the Blue tooth settings
+	 * 
+	 * @param mode
 	 */
-
 	private void changeBluetooth(String mode) {
-		BluetoothAdapter blue = BluetoothAdapter.getDefaultAdapter();
-		if (mode.equals("Enable")) {
-			if (!blue.isEnabled()) {
-				blue.enable();
-				Toast.makeText(this, "Bluetooth Enabled", Toast.LENGTH_SHORT)
-						.show();
-			} else {
-				Toast.makeText(this, "Bluetooth Already Enabled",
-						Toast.LENGTH_SHORT).show();
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter
+				.getDefaultAdapter();
+		if (bluetoothAdapter == null)
+			toast("Device does not support bluetooth!");
+
+		else if (mode.equals("Enable")) {
+			if (!bluetoothAdapter.isEnabled()) {
+				bluetoothAdapter.enable();
+				toast("Bluetooth Enabled");
 			}
-		} else {
-			blue.disable();
+			else
+				toast("Bluetooth Already Enabled");
+		}
+		else {
+			toast("Bluetooth Disabled!");
+			bluetoothAdapter.disable();
 		}
 	}
 
-	/*
-	 * Change Display Settings
+	/**
+	 * This method changes the display settings
+	 * 
+	 * @param mode
 	 */
-
 	private void changeDisplay(String mode) {
 		if (mode == "Low") {
 			android.provider.Settings.System.putInt(this.getContentResolver(),
 					android.provider.Settings.System.SCREEN_BRIGHTNESS, 0);
-			Toast.makeText(this, "Brightness Set Low",
-					Toast.LENGTH_SHORT).show();
+			toast("Brightness Set Low");
 		} else if (mode == "Medium") {
 			android.provider.Settings.System.putInt(this.getContentResolver(),
 					android.provider.Settings.System.SCREEN_BRIGHTNESS, 80);
-			Toast.makeText(this, "Brightness Set Medium",
-					Toast.LENGTH_SHORT).show();
+			toast("Brightness Set Medium");
 		} else {
 			android.provider.Settings.System.putInt(this.getContentResolver(),
 					android.provider.Settings.System.SCREEN_BRIGHTNESS, 250);
-			Toast.makeText(this, "Brightness Set High",
-					Toast.LENGTH_SHORT).show();
+			toast("Brightness Set High");
 		}
 	}
 
@@ -189,15 +189,13 @@ public class ChangeSettingActivity extends Activity {
 		ArrayList<String> connectionInfo = null;
 
 		if (mWifiManager == null)
-			Toast.makeText(this, "No Wifi Manager found!", Toast.LENGTH_SHORT)
-					.show();
+			toast("No Wifi Manager found!");
 		else {
-			List<WifiConfiguration> connections = mWifiManager
-					.getConfiguredNetworks();
+			mConnections = mWifiManager.getConfiguredNetworks();
 			connectionInfo = new ArrayList<String>();
-
-			for (int i = 0; i < connections.size(); i++)
-				connectionInfo.add(connections.get(i).SSID.replace("\"", ""));
+			for (int i = 0; i < mConnections.size(); i++)
+				connectionInfo.add(mConnections.get(i).SSID.replace("\"", "") + " ("
+						+ passwordType(mConnections.get(i)) + ")");
 		}
 
 		ArrayList<String> audio = new ArrayList<String>();
@@ -224,9 +222,68 @@ public class ChangeSettingActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.change_setting, menu);
 		return true;
+	}
+
+	private void testConnection() {
+		mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		WifiConfiguration wc = new WifiConfiguration();
+		wc.SSID = "\"upassi\"";
+		String networkPass = "7k9l1j9nmWLIdJ8d24NBJa";
+		wc.preSharedKey = "\"" + networkPass + "\"";
+		mWifiManager.addNetwork(wc);
+
+		List<WifiConfiguration> list = mWifiManager.getConfiguredNetworks();
+		for (WifiConfiguration i : list) {
+			if (i.SSID != null && i.SSID.equals("\"upassi\"")) {
+				mWifiManager.disconnect();
+				mWifiManager.enableNetwork(i.networkId, true);
+				mWifiManager.reconnect();
+				break;
+			}
+		}
+
+	}
+
+	@SuppressWarnings("deprecation")
+	private void getWiFiPasswordFromUser(String networkName) {
+		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+		alertDialog.setTitle("WiFi Password");
+		alertDialog.setMessage("Please provde the password for " + networkName
+				+ "!");
+
+		final EditText input = new EditText(this);
+		alertDialog.setView(input);
+
+		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				mPassword = input.getText().toString().trim();
+				toast(mPassword);
+			}
+		});
+		alertDialog.show();
+	}
+	
+	/**
+	 * 
+	 * @param wifiConfig
+	 * @return password type
+	 */
+	private String passwordType(WifiConfiguration wifiConfig){
+		
+		if (wifiConfig.allowedKeyManagement.get(KeyMgmt.WPA_PSK)) {
+	        return "WPA-PSK";
+	    }
+	    if (wifiConfig.allowedKeyManagement.get(KeyMgmt.WPA_EAP) ||
+	    		wifiConfig.allowedKeyManagement.get(KeyMgmt.IEEE8021X)) {
+	        return "WPA-EAP";
+	    }
+	    return (wifiConfig.wepKeys[0] != null) ? "WEP" : "OPEN";
+	}
+
+	private void toast(String message) {
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
 
 }
