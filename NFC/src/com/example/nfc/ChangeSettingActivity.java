@@ -285,7 +285,7 @@ public class ChangeSettingActivity extends Activity {
 		build.append("BT " + mBluetoothSetting + "\n");
 		build.append("SSID " + mSSID + "\n");
 		build.append("PASS " + mPassword + "\n");
-		build.append("SEC" + mSecurityType + "\n");
+		build.append("SEC " + mSecurityType + "\n");
 		
 		WelcomeActivity.nfcWriteData = build.toString();
 		toast(WelcomeActivity.nfcWriteData);

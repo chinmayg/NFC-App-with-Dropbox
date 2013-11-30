@@ -97,12 +97,12 @@ public class ReadChangeSettingActivity extends Activity {
 		return list[1].replace("Audio ", "");
 	}
 	
-	private String getBluetoothSetting(String nfcData){
+	private String getDisplaySetting(String nfcData){
 		String[] list = nfcData.split("\n");
 		return list[2].replace("Display ", "");
 	}
 	
-	private String getDisplaySetting(String nfcData){
+	private String getBluetoothSetting(String nfcData){
 		String[] list = nfcData.split("\n");
 		return list[3].replace("BT ", "");
 	}
