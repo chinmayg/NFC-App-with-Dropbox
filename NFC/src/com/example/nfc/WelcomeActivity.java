@@ -103,8 +103,10 @@ public class WelcomeActivity extends TabActivity {
 	        }
 	        
 	        //Tag contains data for change settings activity
-	        else if(subString.contains("CSA")){
-	        	//mTabHost.setCurrentTab(2);
+	        else if(subString.contains("RCSA")){
+	        	intent = new Intent(this,ReadChangeSettingActivity.class);
+	    		intent.putExtra("nfcData", nfcData);
+	    		WelcomeActivity.this.startActivity(intent);
 	        }
 	        
 	        else // Display the data on the tag
@@ -201,7 +203,7 @@ public class WelcomeActivity extends TabActivity {
 		b.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				writeTag(WelcomeActivity.this,detectedTag, "EA:");
+				writeTag(WelcomeActivity.this,detectedTag, WelcomeActivity.nfcWriteData);
 			}
 			
 		});

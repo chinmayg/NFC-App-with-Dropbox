@@ -42,6 +42,9 @@ public class ChangeSettingActivity extends Activity {
 	private String mSSID = "";
 	private String mPassword = "";
 	private String mSecurityType = "";
+	private String mAudioSetting = "";
+	private String mBrightnessSetting = "";
+	private String mBluetoothSetting = "";
 
 	private List<WifiConfiguration> mConnections;
 
@@ -87,10 +90,10 @@ public class ChangeSettingActivity extends Activity {
 							.get(childPosition).trim());
 				} else if (listDataHeader.get(groupPosition).trim()
 						.equals("Wifi")) {
-					mSSID = listDataChild
-							.get(listDataHeader.get(groupPosition))
-							.get(childPosition).trim();
+					mSSID = mConnections.get(childPosition).SSID.replace("\"", "");
 					mSecurityType = passwordType(mConnections.get(childPosition));
+					mPassword = "";
+					prepareNfcString();
 					if(mSecurityType != "OPEN")
 						getWiFiPasswordFromUser(mSSID);
 				}
@@ -113,15 +116,18 @@ public class ChangeSettingActivity extends Activity {
 		AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
 		if (mode.equals("Normal")) {
 			am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+			mAudioSetting = "N";
 			toast("Phone Set to Normal Mode");
 		} else if (mode.equals("Silent")) {
 			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+			mAudioSetting = "S";
 			toast("Phone Set to Silent Mode");
 		} else {
 			am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+			mAudioSetting = "V";
 			toast("Phone Set to Vibrate Mode");
 		}
-
+		prepareNfcString();
 	}
 
 	/**
@@ -138,6 +144,7 @@ public class ChangeSettingActivity extends Activity {
 		else if (mode.equals("Enable")) {
 			if (!bluetoothAdapter.isEnabled()) {
 				bluetoothAdapter.enable();
+				mBluetoothSetting = "E";
 				toast("Bluetooth Enabled");
 			}
 			else
@@ -145,8 +152,11 @@ public class ChangeSettingActivity extends Activity {
 		}
 		else {
 			toast("Bluetooth Disabled!");
+			mBluetoothSetting = "D";
 			bluetoothAdapter.disable();
 		}
+		
+		prepareNfcString();
 	}
 
 	/**
@@ -158,16 +168,21 @@ public class ChangeSettingActivity extends Activity {
 		if (mode == "Low") {
 			android.provider.Settings.System.putInt(this.getContentResolver(),
 					android.provider.Settings.System.SCREEN_BRIGHTNESS, 0);
+			mBrightnessSetting = "L";
 			toast("Brightness Set Low");
 		} else if (mode == "Medium") {
 			android.provider.Settings.System.putInt(this.getContentResolver(),
 					android.provider.Settings.System.SCREEN_BRIGHTNESS, 80);
+			mBrightnessSetting = "M";
 			toast("Brightness Set Medium");
 		} else {
 			android.provider.Settings.System.putInt(this.getContentResolver(),
 					android.provider.Settings.System.SCREEN_BRIGHTNESS, 250);
+			mBrightnessSetting = "H";
 			toast("Brightness Set High");
 		}
+		
+		prepareNfcString();
 	}
 
 	/*
@@ -226,26 +241,6 @@ public class ChangeSettingActivity extends Activity {
 		return true;
 	}
 
-	private void testConnection() {
-		mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		WifiConfiguration wc = new WifiConfiguration();
-		wc.SSID = "\"upassi\"";
-		String networkPass = "7k9l1j9nmWLIdJ8d24NBJa";
-		wc.preSharedKey = "\"" + networkPass + "\"";
-		mWifiManager.addNetwork(wc);
-
-		List<WifiConfiguration> list = mWifiManager.getConfiguredNetworks();
-		for (WifiConfiguration i : list) {
-			if (i.SSID != null && i.SSID.equals("\"upassi\"")) {
-				mWifiManager.disconnect();
-				mWifiManager.enableNetwork(i.networkId, true);
-				mWifiManager.reconnect();
-				break;
-			}
-		}
-
-	}
-
 	@SuppressWarnings("deprecation")
 	private void getWiFiPasswordFromUser(String networkName) {
 		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
@@ -259,6 +254,7 @@ public class ChangeSettingActivity extends Activity {
 		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				mPassword = input.getText().toString().trim();
+				prepareNfcString();
 				toast(mPassword);
 			}
 		});
@@ -272,14 +268,27 @@ public class ChangeSettingActivity extends Activity {
 	 */
 	private String passwordType(WifiConfiguration wifiConfig){
 		
-		if (wifiConfig.allowedKeyManagement.get(KeyMgmt.WPA_PSK)) {
+		if (wifiConfig.allowedKeyManagement.get(KeyMgmt.WPA_PSK))
 	        return "WPA-PSK";
-	    }
-	    if (wifiConfig.allowedKeyManagement.get(KeyMgmt.WPA_EAP) ||
+		else  if (wifiConfig.allowedKeyManagement.get(KeyMgmt.WPA_EAP) ||
 	    		wifiConfig.allowedKeyManagement.get(KeyMgmt.IEEE8021X)) {
 	        return "WPA-EAP";
 	    }
 	    return (wifiConfig.wepKeys[0] != null) ? "WEP" : "OPEN";
+	}
+	
+	private void prepareNfcString(){
+		StringBuilder build = new StringBuilder();
+		build.append("RCSA:\n");
+		build.append("Audio " + mAudioSetting + "\n");
+		build.append("Display " + mBrightnessSetting + "\n");
+		build.append("BT " + mBluetoothSetting + "\n");
+		build.append("SSID " + mSSID + "\n");
+		build.append("PASS " + mPassword + "\n");
+		build.append("SEC" + mSecurityType + "\n");
+		
+		WelcomeActivity.nfcWriteData = build.toString();
+		toast(WelcomeActivity.nfcWriteData);
 	}
 
 	private void toast(String message) {

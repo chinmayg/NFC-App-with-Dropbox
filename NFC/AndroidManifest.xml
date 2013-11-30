@@ -83,6 +83,9 @@
             android:name="com.example.nfc.RefreshScreen"
             android:label="@string/title_activity_refresh_screen" >
         </activity>
+        <activity
+            android:name="com.example.nfc.ReadChangeSettingActivity" >
+        </activity>
     </application>
 
 </manifest>
