@@ -101,7 +101,7 @@ public class WelcomeActivity extends TabActivity {
 			else if (subString.contains("CUA")) {
 				// mTabHost.setCurrentTab(1);
 				final TextView message = new TextView(WelcomeActivity.this);
-				message.setGravity(Gravity.CENTER_HORIZONTAL);
+				message.setGravity(Gravity.CENTER);
 				String subString2 = nfcData.substring(first + 1,
 						nfcData.length()).replace("\n", "");
 				String url = subString2 + "?dl=1";
@@ -246,7 +246,9 @@ public class WelcomeActivity extends TabActivity {
 		b.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				finish();
+				DropboxSession.getInstance(WelcomeActivity.this).logOut();
+				Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+				WelcomeActivity.this.startActivity(intent);
 			}
 
 		});
