@@ -12,24 +12,48 @@
         android:id="@+id/fileOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="create URL" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:text="Choose a File to Share" />
 
     <Button
         android:id="@+id/button_openFile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/fileOut"
         android:layout_below="@+id/fileOut"
-        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
         android:text="OpenFile" />
 
-    <TextView
-        android:id="@+id/textView_output"
+    <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button_openFile"
-        android:layout_below="@+id/button_openFile"
-        android:layout_marginTop="34dp"
-        android:text="TextView" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="124dp" >
+
+        <TextView
+            android:id="@+id/textView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="0dip"
+        android:gravity="left"
+        android:text="Your Share URL:"/>
+
+        <TextView
+            android:id="@+id/textView_output"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="2dip"
+        android:gravity="left"
+        android:text="" />
+
+    </LinearLayout>
 
 </RelativeLayout>

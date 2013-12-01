@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
 				android:layout_above="@+id/button_Logout"
 				android:layout_below="@+id/tabcontent"
-                android:text="Programm NFC" />
+                android:text="Program NFC" />
     
     <TabHost
         android:id="@android:id/tabhost"

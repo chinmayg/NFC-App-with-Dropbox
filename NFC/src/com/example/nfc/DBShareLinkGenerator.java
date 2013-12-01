@@ -12,7 +12,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -76,12 +78,14 @@ public class DBShareLinkGenerator extends AsyncTask<Void, Long, Boolean>{
 	}
     private void showLink(int id, String uri) {
         TextView v = (TextView) mParentActivity.findViewById(id);
+		final SpannableString s = new SpannableString(uri);
+		Linkify.addLinks(s, Linkify.WEB_URLS);
+		v.setText(s);
+		v.setMovementMethod(LinkMovementMethod.getInstance());
         if (uri == null) {
             v.setText("", TextView.BufferType.NORMAL);
             return;
         }
-        v.setText(uri, TextView.BufferType.NORMAL);
-        v.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
 }
