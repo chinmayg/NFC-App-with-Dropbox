@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
+import com.example.nfc.R;
+import com.example.nfc.R.id;
 
 public class DBShareLinkGenerator extends AsyncTask<Void, Long, Boolean>{
 

@@ -3,6 +3,7 @@ package com.example.nfc;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
