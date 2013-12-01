@@ -1,17 +1,15 @@
 package com.example.nfc;
 
-import com.dropbox.chooser.android.DbxChooser;
-
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.text.method.LinkMovementMethod;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
+
+import com.dropbox.chooser.android.DbxChooser;
+import com.dropbox.client2.DropboxAPI;
 
 public class CreateURLActivity extends Activity {
 	
@@ -20,7 +18,8 @@ public class CreateURLActivity extends Activity {
 	static final String APP_KEY = "1p4kimx81tdhsce";
     static final int DBX_CHOOSER_REQUEST = 0; 
 	private static final int FILE_SELECT_CODE = 0;
-
+	private String fileDown = "";
+	DropboxAPI.DropboxLink mShareLink;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,23 +41,17 @@ public class CreateURLActivity extends Activity {
 			case FILE_SELECT_CODE:
 				if(resultCode == RESULT_OK){
 					
-					DbxChooser.Result result = new DbxChooser.Result(data);	                
-	                showLink(R.id.textView_output, result.getLink());
+					DbxChooser.Result result = new DbxChooser.Result(data);	
+					fileDown = result.getLink().toString().substring(56);
+					fileDown = fileDown.replace("%20", " ");
+					DBShareLinkGenerator dbGen = new DBShareLinkGenerator(CreateURLActivity.this,fileDown,CreateURLActivity.this);
+					dbGen.execute();
 				}
 			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
-    private void showLink(int id, Uri uri) {
-        TextView v = (TextView) findViewById(id);
-        if (uri == null) {
-            v.setText("", TextView.BufferType.NORMAL);
-            return;
-        }
-        v.setText(uri.toString(), TextView.BufferType.NORMAL);
-        v.setMovementMethod(LinkMovementMethod.getInstance());
-    }
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

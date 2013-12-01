@@ -64,27 +64,6 @@ public class EncryptActivity extends Activity implements Security {
 				DBDownloadTask dbDown = new DBDownloadTask(
 						EncryptActivity.this, fileDown, EncryptActivity.this);
 				dbDown.execute();
-				// Uri uri = data.getData();
-				// // output.append(uri.toString());
-				// // output.append("\n");
-				// try {
-				// String path = getPath(this,uri);
-				// output.append(path);
-				// EncryptionHelper encryptor = new EncryptionHelper(10);
-				// String key = encryptor.encrypt(path,
-				// "storage/emulated/0/Android/data/com.dropbox.android/files/scratch/test.txt");
-				// output.append(key);
-				//
-				// // File file = new File(path);
-				// // output.append(file.getName());
-				// // output.append("\n\n");
-				// // output.append(file.toString());
-				// //output.append(getPath(this,uri));
-				// } catch (URISyntaxException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-				//
 			}
 			break;
 		}
