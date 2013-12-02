@@ -24,6 +24,7 @@ import com.dropbox.chooser.android.DbxChooser;
 import encyrption.EncryptionHelper;
 import encyrption.Security;
 
+
 public class EncryptActivity extends Activity implements Security {
 
 	private Button openFile;
@@ -72,8 +73,8 @@ public class EncryptActivity extends Activity implements Security {
 	}
 
 	public void handleSecurity(String fileLoc, String fileName) {
-		String dest = this.getCacheDir().getAbsolutePath() + "/" + "encrypted"
-				+ fileName;
+		String dest = this.getExternalCacheDir().getAbsolutePath() + "/" + "encrypted"
+				+ fileName.substring(1);
 		EncryptionHelper helper = new EncryptionHelper(10);
 		String key = helper.encrypt(fileLoc, dest);
 		dispString("Please Program NFC with key: " + key);
@@ -85,6 +86,13 @@ public class EncryptActivity extends Activity implements Security {
 		up.execute();
 		
 		// Program NFC tag with DBPath and key
+		StringBuilder toNFC = new StringBuilder();
+		toNFC.append("DA:\n");
+		toNFC.append("key:"+key+"\n");
+		toNFC.append("url:"+DBPath+fileName.substring(1)+"\n");
+		
+		WelcomeActivity.nfcWriteData = toNFC.toString();
+		dispString(WelcomeActivity.nfcWriteData + " will be written to NFC when brought closer!");
 	}
 
 	public void dispString(String message) {
