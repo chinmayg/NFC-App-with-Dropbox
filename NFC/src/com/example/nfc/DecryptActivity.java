@@ -67,17 +67,19 @@ public class DecryptActivity extends Activity implements Security {
 						this,
 						"ERROR: Incorrect formatting of nfcData, click button!",
 						Toast.LENGTH_LONG).show();
+				returnToPrev.setEnabled(true);
 			} else {
 				if (info[1].substring(0, info[1].indexOf(":")).equals("key")
 						&& info[2].substring(0, info[2].indexOf(":")).equals(
 								"url")) {
-					key = info[1].substring(info[1].indexOf(":"));
-					url = info[1].substring(info[1].indexOf(":"));
+					key = info[1].substring(info[1].indexOf(":") + 1);
+					url = info[2].substring(info[2].indexOf(":") + 1);
 				} else {
 					Toast.makeText(
 							this,
 							"ERROR: Incorrect formatting of nfcData, click button!",
 							Toast.LENGTH_LONG).show();
+					returnToPrev.setEnabled(true);
 				}
 
 			}
@@ -85,6 +87,7 @@ public class DecryptActivity extends Activity implements Security {
 			Toast.makeText(this,
 					"ERROR: Incorrect formatting of nfcData, click button!",
 					Toast.LENGTH_LONG).show();
+			returnToPrev.setEnabled(true);
 		}
 
 		DBDownloadTask dbDown = new DBDownloadTask(DecryptActivity.this, url,
@@ -144,6 +147,7 @@ public class DecryptActivity extends Activity implements Security {
 			String line = "";
 			while ((line = file.readLine()) != null && lines < 6) {
 				file_out.append(line + "\n");
+				lines++;
 			}
 			file.close();
 		} catch (IOException e) {
