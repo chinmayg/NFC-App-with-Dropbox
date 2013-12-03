@@ -134,10 +134,14 @@ public class ReadChangeSettingActivity extends Activity {
 		
 		else if(security.equals("WPA-EAP")){
 			wc.preSharedKey = "\"" + password + "\"";
+			toast("WPA-EAP security not supported");
+			return;
 		}
 		
 		else if(security.equals("WEP")){
 			 wc.wepKeys[0] = "\"" + password + "\"";
+			 toast("WEP security not supported");
+			 return;
 		}
 		
 		else if(security.equals("OPEN")){}

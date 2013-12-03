@@ -252,7 +252,7 @@ public class ChangeSettingActivity extends Activity {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void getWiFiPasswordFromUser(String networkName) {
+	private void getWiFiPasswordFromUser(final String networkName) {
 		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 		alertDialog.setTitle("WiFi Password");
 		alertDialog.setMessage("Please provde the password for " + networkName
@@ -265,7 +265,7 @@ public class ChangeSettingActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				mPassword = input.getText().toString().trim();
 				prepareNfcString();
-				toast(mPassword);
+				toast(networkName + " selected to the NFC");
 			}
 		});
 		alertDialog.show();
@@ -305,11 +305,3 @@ public class ChangeSettingActivity extends Activity {
 	}
 
 }
-
-/*
- * <ListView android:id="@+id/listView1" android:layout_width="match_parent"
- * android:layout_height="wrap_content" android:layout_alignParentBottom="true"
- * android:layout_alignParentLeft="true" android:layout_below="@+id/fileOut" >
- * 
- * </ListView>
- */
