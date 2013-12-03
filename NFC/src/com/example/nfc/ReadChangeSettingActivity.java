@@ -164,6 +164,7 @@ public class ReadChangeSettingActivity extends Activity {
 	private void connectWiFi(String SSID, String security, String password){
 		
 		WifiManager mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		mWifiManager.setWifiEnabled(true);
 		WifiConfiguration wc = new WifiConfiguration();
 		wc.SSID = "\"" + SSID + "\"";
 		

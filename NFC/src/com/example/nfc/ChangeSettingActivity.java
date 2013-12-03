@@ -208,6 +208,7 @@ public class ChangeSettingActivity extends Activity {
 		if (mWifiManager == null)
 			toast("No Wifi Manager found!");
 		else {
+			mWifiManager.setWifiEnabled(true);
 			mConnections = mWifiManager.getConfiguredNetworks();
 			connectionInfo = new ArrayList<String>();
 			for (int i = 0; i < mConnections.size(); i++)
