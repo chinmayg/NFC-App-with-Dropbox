@@ -5,8 +5,10 @@ import java.nio.charset.Charset;
 
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,10 +28,13 @@ import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,15 +54,20 @@ public class WelcomeActivity extends TabActivity {
 	private NfcAdapter mNfcAdapter;
 	private PendingIntent mPendingIntent;
 	private IntentFilter[] mReadTagFilters;
+	
 
 	private Tag detectedTag;
 	private IntentFilter[] ndefExchangeFilters_;
 
 	static String nfcWriteData = "";
+	
+	private boolean readTag = false;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
+
+		
 
 		setUpNfcFilters();
 		// Setting up on click listeners
@@ -85,58 +95,8 @@ public class WelcomeActivity extends TabActivity {
 					.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
 			NdefRecord relayRecord = ((NdefMessage) rawMsgs[0]).getRecords()[0];
 			String nfcData = new String(relayRecord.getPayload());
-
-			int first = nfcData.indexOf(":");
-			if (first < 0)
-				first = 0;
-
-			String subString = nfcData.substring(0, first);
-
-			// Tag contains data for decryption activity
-			if (subString.contains("DA")) {
-				intent = new Intent(this, DecryptActivity.class);
-				intent.putExtra("nfcData", nfcData);
-				WelcomeActivity.this.startActivity(intent);
-			}
-			// Tag contains data for create url activity
-			else if (subString.contains("CUA")) {
-				// mTabHost.setCurrentTab(1);
-				final TextView message = new TextView(WelcomeActivity.this);
-				message.setGravity(Gravity.CENTER);
-				String subString2 = nfcData.substring(first + 1,
-						nfcData.length()).replace("\n", "");
-				String url = subString2 + "?dl=1";
-				final SpannableString s = new SpannableString(url);
-				Linkify.addLinks(s, Linkify.WEB_URLS);
-				message.setText(s);
-				message.setMovementMethod(LinkMovementMethod.getInstance());
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setTitle("Click Link to Start Downloading")
-						.setView(message)
-						.setCancelable(true)
-						.setNegativeButton("Cancel",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										dialog.dismiss();
-									}
-								});
-
-				AlertDialog welcomeAlert = builder.create();
-				welcomeAlert.show();
-			}
-
-			// Tag contains data for change settings activity
-			else if (subString.contains("RCSA")) {
-				intent = new Intent(this, ReadChangeSettingActivity.class);
-				intent.putExtra("nfcData", nfcData);
-				WelcomeActivity.this.startActivity(intent);
-			}
-
-			else
-				// Display the data on the tag
-				Toast.makeText(this, "Invalid Data on the Tag! " + nfcData,
-						Toast.LENGTH_SHORT).show();
+			
+			setTagChooseRead(nfcData);
 		}
 	}
 
@@ -155,6 +115,8 @@ public class WelcomeActivity extends TabActivity {
 
 	@SuppressLint("NewApi")
 	public static boolean writeTag(Context context, Tag tag, String data) {
+		if(tag == null)
+			return false;
 		// Record to launch Play Store if app is not installed
 		NdefRecord appRecord = NdefRecord
 				.createApplicationRecord("com.example.nfc");
@@ -223,6 +185,87 @@ public class WelcomeActivity extends TabActivity {
 		return false;
 	}
 
+	private void setTagChooseRead(final String nfcData){
+		AlertDialog.Builder readBuilder = new AlertDialog.Builder(this);
+		readBuilder.setTitle("NFC Tag Discovered")
+				.setMessage("Do you want to read from the tag?")
+				.setCancelable(true)
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						readTag = true;
+						setUp(nfcData);
+						dialog.dismiss();
+					}
+				})
+				.setNegativeButton("Cancel",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int id) {
+								readTag = false;
+								dialog.dismiss();
+							}
+						});
+
+		AlertDialog readAlert = readBuilder.create();
+		if(!readAlert.isShowing())
+			readAlert.show();
+	}
+	
+	private void setUp(String nfcData){
+		int first = nfcData.indexOf(":");
+		if (first < 0)
+			first = 0;
+
+		String subString = nfcData.substring(0, first);
+		Intent intent;
+		// Tag contains data for decryption activity
+		if (subString.contains("DA")) {
+			intent = new Intent(this, DecryptActivity.class);
+			intent.putExtra("nfcData", nfcData);
+			WelcomeActivity.this.startActivity(intent);
+		}
+		// Tag contains data for create url activity
+		else if (subString.contains("CUA")) {
+			// mTabHost.setCurrentTab(1);
+			final TextView message = new TextView(WelcomeActivity.this);
+			message.setGravity(Gravity.CENTER);
+			String subString2 = nfcData.substring(first + 1,
+					nfcData.length()).replace("\n", "");
+			String url = subString2 + "?dl=1";
+			final SpannableString s = new SpannableString(url);
+			Linkify.addLinks(s, Linkify.WEB_URLS);
+			message.setText(s);
+			message.setMovementMethod(LinkMovementMethod.getInstance());
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Click Link to Start Downloading")
+					.setView(message)
+					.setCancelable(true)
+					.setNegativeButton("Cancel",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.dismiss();
+								}
+							});
+
+			AlertDialog welcomeAlert = builder.create();
+			welcomeAlert.show();
+		}
+
+		// Tag contains data for change settings activity
+		else if (subString.contains("RCSA")) {
+			intent = new Intent(this, ReadChangeSettingActivity.class);
+			intent.putExtra("nfcData", nfcData);
+			WelcomeActivity.this.startActivity(intent);
+		}
+
+		else
+			// Display the data on the tag
+			Toast.makeText(this, "Invalid Data on the Tag! " + nfcData,
+					Toast.LENGTH_SHORT).show();
+	}
 	/**
 	 * This method sets ups the on click listener for the program NFC / Write
 	 * NFC button
@@ -232,8 +275,20 @@ public class WelcomeActivity extends TabActivity {
 		b.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				writeTag(WelcomeActivity.this, detectedTag,
+				final ProgressDialog mDialog = new ProgressDialog(WelcomeActivity.this);
+				mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+				mDialog.setMessage("Writting on the tag...");
+				mDialog.show();
+				boolean isWritten = writeTag(WelcomeActivity.this, detectedTag,
 						WelcomeActivity.nfcWriteData);
+				if(!isWritten)
+					Toast.makeText(WelcomeActivity.this,
+							"Writing on Tag failed!", Toast.LENGTH_SHORT).show();
+				
+				else
+					Toast.makeText(WelcomeActivity.this,
+							"Writing on Tag succedded!", Toast.LENGTH_SHORT).show();
+				mDialog.cancel();
 			}
 
 		});

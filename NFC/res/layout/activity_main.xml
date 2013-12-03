@@ -6,6 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/white"
     tools:context=".MainActivity" >
     
     <LinearLayout
@@ -15,15 +16,24 @@
         android:orientation="horizontal" >
 
     </LinearLayout>
+    
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/button_Login"
+        android:src="@drawable/nfc" />
 
     <Button
         android:id="@+id/button_Login"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/layout_username"
-        android:layout_below="@+id/layout_username"
-        android:layout_marginTop="133dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
+        android:background="@drawable/gradient"
+        style="@style/ButtonText"
         android:text="Link to Dropbox" />
 
 </RelativeLayout>

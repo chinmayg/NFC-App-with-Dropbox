@@ -9,27 +9,36 @@
     tools:context=".EncryptActivity" >
 
     <TextView
-        android:id="@+id/fileOut"
-        android:layout_width="wrap_content"
+        android:id="@+id/textView_output"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Encrypt" />
+        android:layout_below="@+id/button_openFile"
+        android:layout_marginTop="38dp"
+        android:gravity="left"
+        android:text=""
+        android:textColor="#2f6699"
+        android:textSize="20dp" />
 
     <Button
         android:id="@+id/button_openFile"
+        style="@style/ButtonText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/fileOut"
         android:layout_below="@+id/fileOut"
-        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/gradient"
         android:text="OpenFile" />
 
     <TextView
-        android:id="@+id/textView_output"
+        android:id="@+id/fileOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button_openFile"
-        android:layout_below="@+id/button_openFile"
-        android:layout_marginTop="38dp"
-        android:text="TextView" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:paddingBottom="20dp"
+        android:text="Choose a File to Encrypt"
+        android:textColor="#2f6699"
+        android:textSize="25dp" />
 
 </RelativeLayout>

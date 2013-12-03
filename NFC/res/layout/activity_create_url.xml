@@ -15,45 +15,40 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="18dp"
-        android:text="Choose a File to Share" />
+        android:paddingBottom="20dp"
+        android:text="Choose a File to Share"
+        android:textColor="#2f6699"
+        android:textSize="25dp" />
 
     <Button
         android:id="@+id/button_openFile"
+        style="@style/ButtonText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/fileOut"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="21dp"
+        android:background="@drawable/gradient"
         android:text="OpenFile" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="124dp" >
-
-        <TextView
-            android:id="@+id/textView1"
+    <TextView
+        android:paddingTop="20dp"
+        android:id="@+id/textView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:padding="0dip"
-        android:gravity="left"
-        android:text="Your Share URL:"/>
+        android:layout_below="@+id/button_openFile"
+        android:text="Your Share URL:"
+        android:textColor="#2f6699"
+        android:textSize="25dp" />
 
-        <TextView
-            android:id="@+id/textView_output"
+    <TextView
+        android:paddingTop="20dp"
+        android:id="@+id/textView_output"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:padding="2dip"
+        android:layout_below="@+id/textView1"
         android:gravity="left"
+        android:textSize="20dp"
         android:text="" />
-
-    </LinearLayout>
 
 </RelativeLayout>

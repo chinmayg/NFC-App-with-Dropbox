@@ -10,12 +10,14 @@
 
     <Button
         android:id="@+id/doneButton"
+        style="@style/ButtonText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="85dp"
+        android:background="@drawable/gradient"
         android:text="Return" />
 
     <ScrollView
@@ -32,19 +34,22 @@
 
             <TextView
                 android:id="@+id/fileOut"
+                android:textColor="#2f6699"
+                android:textSize="18dp" 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
         </LinearLayout>
     </ScrollView>
 
     <Button
         android:id="@+id/previewButton"
+        style="@style/ButtonText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/doneButton"
         android:layout_alignLeft="@+id/doneButton"
         android:layout_alignRight="@+id/doneButton"
+        android:background="@drawable/gradient"
         android:text="See Preview" />
 
 </RelativeLayout>

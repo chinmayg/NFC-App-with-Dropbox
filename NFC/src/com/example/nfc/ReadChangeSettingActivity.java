@@ -143,7 +143,6 @@ public class ReadChangeSettingActivity extends Activity {
 		else if(security.equals("OPEN")){}
 		
 		else{
-			toast("Invalid WiFi info on tag!");
 			return;
 		}
 		

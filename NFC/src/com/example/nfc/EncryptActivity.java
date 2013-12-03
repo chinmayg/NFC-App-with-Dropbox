@@ -77,8 +77,6 @@ public class EncryptActivity extends Activity implements Security {
 		EncryptionHelper helper = new EncryptionHelper(10);
 		String key = helper.encrypt(fileLoc, dest);
 		dispString("Please Program NFC with key: " + key);
-		Toast error = Toast.makeText(this, key, Toast.LENGTH_LONG);
-		error.show();
 		// upload file at destination
 		String DBPath = "AppUploads/";
 		DBUploadTask up = new DBUploadTask(this, DBPath, new File(dest));
@@ -91,8 +89,11 @@ public class EncryptActivity extends Activity implements Security {
 		toNFC.append("url:/" + DBPath + encryptedName + "\n");
 
 		WelcomeActivity.nfcWriteData = toNFC.toString();
-		dispString(WelcomeActivity.nfcWriteData
-				+ " will be written to NFC when brought closer!");
+		
+		toNFC = new StringBuilder();
+		toNFC.append("KEY:" + key + "\n");
+		toNFC.append("URL:/" + DBPath + encryptedName + "\n");
+		dispString(toNFC.toString());
 	}
 
 	public void dispString(String message) {

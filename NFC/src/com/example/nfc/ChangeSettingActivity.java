@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.dropbox.chooser.android.R.color;
+
 import android.media.AudioManager;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiConfiguration.AuthAlgorithm;
@@ -16,11 +18,13 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -32,6 +36,7 @@ public class ChangeSettingActivity extends Activity {
 
 	// Reference to the WiFi manager
 	private WifiManager mWifiManager;
+	private RelativeLayout settingsLayout;
 
 	// Resources for expandable listview
 	ExpandableListAdapter listAdapter;
@@ -52,6 +57,9 @@ public class ChangeSettingActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_change_setting);
+		
+//		settingsLayout = (RelativeLayout) findViewById(R.id.layout_settings);
+//		settingsLayout.setBackgroundColor(Color.BLUE);
 
 		// testConnection();
 
@@ -94,8 +102,10 @@ public class ChangeSettingActivity extends Activity {
 					mSecurityType = passwordType(mConnections.get(childPosition));
 					mPassword = "";
 					prepareNfcString();
-					if(mSecurityType != "OPEN")
+					if(mSecurityType.equals("WPA-PSK"))
 						getWiFiPasswordFromUser(mSSID);
+					else if(!mSecurityType.equals("OPEN"))
+						toast(mSecurityType + "security not supported");
 				}
 				return false;
 			}
@@ -113,17 +123,17 @@ public class ChangeSettingActivity extends Activity {
 	 * @param mode
 	 */
 	private void changeAudio(String mode) {
-		AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+//		AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
 		if (mode.equals("Normal")) {
-			am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+//			am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 			mAudioSetting = "N";
 			toast("Phone Set to Normal Mode");
 		} else if (mode.equals("Silent")) {
-			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+//			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 			mAudioSetting = "S";
 			toast("Phone Set to Silent Mode");
 		} else {
-			am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+//			am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 			mAudioSetting = "V";
 			toast("Phone Set to Vibrate Mode");
 		}
@@ -143,7 +153,7 @@ public class ChangeSettingActivity extends Activity {
 
 		else if (mode.equals("Enable")) {
 			if (!bluetoothAdapter.isEnabled()) {
-				bluetoothAdapter.enable();
+//				bluetoothAdapter.enable();
 				mBluetoothSetting = "E";
 				toast("Bluetooth Enabled");
 			}
@@ -153,7 +163,7 @@ public class ChangeSettingActivity extends Activity {
 		else {
 			toast("Bluetooth Disabled!");
 			mBluetoothSetting = "D";
-			bluetoothAdapter.disable();
+//			bluetoothAdapter.disable();
 		}
 		
 		prepareNfcString();
@@ -166,18 +176,18 @@ public class ChangeSettingActivity extends Activity {
 	 */
 	private void changeDisplay(String mode) {
 		if (mode == "Low") {
-			android.provider.Settings.System.putInt(this.getContentResolver(),
-					android.provider.Settings.System.SCREEN_BRIGHTNESS, 0);
+//			android.provider.Settings.System.putInt(this.getContentResolver(),
+//					android.provider.Settings.System.SCREEN_BRIGHTNESS, 0);
 			mBrightnessSetting = "L";
 			toast("Brightness Set Low");
 		} else if (mode == "Medium") {
-			android.provider.Settings.System.putInt(this.getContentResolver(),
-					android.provider.Settings.System.SCREEN_BRIGHTNESS, 80);
+//			android.provider.Settings.System.putInt(this.getContentResolver(),
+//					android.provider.Settings.System.SCREEN_BRIGHTNESS, 80);
 			mBrightnessSetting = "M";
 			toast("Brightness Set Medium");
 		} else {
-			android.provider.Settings.System.putInt(this.getContentResolver(),
-					android.provider.Settings.System.SCREEN_BRIGHTNESS, 250);
+//			android.provider.Settings.System.putInt(this.getContentResolver(),
+//					android.provider.Settings.System.SCREEN_BRIGHTNESS, 250);
 			mBrightnessSetting = "H";
 			toast("Brightness Set High");
 		}
@@ -288,7 +298,6 @@ public class ChangeSettingActivity extends Activity {
 		build.append("SEC " + mSecurityType + "\n");
 		
 		WelcomeActivity.nfcWriteData = build.toString();
-		toast(WelcomeActivity.nfcWriteData);
 	}
 
 	private void toast(String message) {
