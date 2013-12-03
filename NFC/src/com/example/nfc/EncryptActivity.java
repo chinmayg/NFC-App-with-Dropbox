@@ -138,33 +138,6 @@ public class EncryptActivity extends Activity implements Security {
 		WelcomeActivity.nfcWriteData = toNFC.toString();
 	}
 
-	// -------------------------------------------------------------------------
-	/**
-	 *  
-	 */
-	public static String getPath(Context context, Uri uri)
-			throws URISyntaxException {
-		if ("content".equalsIgnoreCase(uri.getScheme())) {
-			String[] projection = { "_data" };
-			Cursor cursor = null;
-
-			try {
-				cursor = context.getContentResolver().query(uri, projection,
-						null, null, null);
-				int column_index = cursor.getColumnIndexOrThrow("_data");
-				if (cursor.moveToFirst()) {
-					return cursor.getString(column_index);
-				}
-			} catch (Exception e) {
-				// Eat it
-			}
-		} else if ("file".equalsIgnoreCase(uri.getScheme())) {
-			return uri.getPath();
-		}
-
-		return null;
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
