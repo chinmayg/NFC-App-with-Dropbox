@@ -10,11 +10,9 @@
 
 package com.example.nfc;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -33,7 +31,6 @@ import com.dropbox.client2.exception.DropboxPartialFileException;
 import com.dropbox.client2.exception.DropboxServerException;
 import com.dropbox.client2.exception.DropboxUnlinkedException;
 
-import encyrption.EncryptionHelper;
 import encyrption.Security;
 
 public class DBDownloadTask extends AsyncTask<Boolean, Long, Boolean> {
@@ -41,7 +38,6 @@ public class DBDownloadTask extends AsyncTask<Boolean, Long, Boolean> {
 	private Security invokingActivity;
 	
 	private Context mContext;
-	private Context eContext;
 	private final ProgressDialog mDialog;
 	private DropboxAPI<AndroidAuthSession> mApi;
 	private String mPath;
@@ -55,7 +51,6 @@ public class DBDownloadTask extends AsyncTask<Boolean, Long, Boolean> {
 	public DBDownloadTask(Context context, String dropboxPath, Security invoker) {
 		// We set the context this way so we don't accidentally leak activities
 		mContext = context.getApplicationContext();
-		eContext = context;
 		invokingActivity = invoker;
 		mApi = DropboxSession.getApi();
 		mPath = dropboxPath;	

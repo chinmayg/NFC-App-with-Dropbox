@@ -32,6 +32,13 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 
+/**
+ * This Activity provides the user an interface to choose
+ * Audio, Blue tooth, WiFi, and diplay settings that can be
+ * programmed on an NFC tag.
+ * @author Arjun Passi, Siddartha Tondapu
+ *
+ */
 public class ChangeSettingActivity extends Activity {
 
 	// Reference to the WiFi manager
@@ -57,11 +64,6 @@ public class ChangeSettingActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_change_setting);
-		
-//		settingsLayout = (RelativeLayout) findViewById(R.id.layout_settings);
-//		settingsLayout.setBackgroundColor(Color.BLUE);
-
-		// testConnection();
 
 		// get the listview
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
@@ -106,6 +108,8 @@ public class ChangeSettingActivity extends Activity {
 						getWiFiPasswordFromUser(mSSID);
 					else if(!mSecurityType.equals("OPEN"))
 						toast(mSecurityType + "security not supported");
+					else if(mSecurityType.equals("OPEN"))
+						toast(mSSID + " selected");
 				}
 				return false;
 			}
@@ -123,17 +127,13 @@ public class ChangeSettingActivity extends Activity {
 	 * @param mode
 	 */
 	private void changeAudio(String mode) {
-//		AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
 		if (mode.equals("Normal")) {
-//			am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 			mAudioSetting = "N";
 			toast("Phone Set to Normal Mode");
 		} else if (mode.equals("Silent")) {
-//			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 			mAudioSetting = "S";
 			toast("Phone Set to Silent Mode");
 		} else {
-//			am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 			mAudioSetting = "V";
 			toast("Phone Set to Vibrate Mode");
 		}
@@ -153,7 +153,6 @@ public class ChangeSettingActivity extends Activity {
 
 		else if (mode.equals("Enable")) {
 			if (!bluetoothAdapter.isEnabled()) {
-//				bluetoothAdapter.enable();
 				mBluetoothSetting = "E";
 				toast("Bluetooth Enabled");
 			}
@@ -163,7 +162,6 @@ public class ChangeSettingActivity extends Activity {
 		else {
 			toast("Bluetooth Disabled!");
 			mBluetoothSetting = "D";
-//			bluetoothAdapter.disable();
 		}
 		
 		prepareNfcString();
@@ -176,18 +174,12 @@ public class ChangeSettingActivity extends Activity {
 	 */
 	private void changeDisplay(String mode) {
 		if (mode == "Low") {
-//			android.provider.Settings.System.putInt(this.getContentResolver(),
-//					android.provider.Settings.System.SCREEN_BRIGHTNESS, 0);
 			mBrightnessSetting = "L";
 			toast("Brightness Set Low");
 		} else if (mode == "Medium") {
-//			android.provider.Settings.System.putInt(this.getContentResolver(),
-//					android.provider.Settings.System.SCREEN_BRIGHTNESS, 80);
 			mBrightnessSetting = "M";
 			toast("Brightness Set Medium");
 		} else {
-//			android.provider.Settings.System.putInt(this.getContentResolver(),
-//					android.provider.Settings.System.SCREEN_BRIGHTNESS, 250);
 			mBrightnessSetting = "H";
 			toast("Brightness Set High");
 		}
@@ -237,9 +229,7 @@ public class ChangeSettingActivity extends Activity {
 		bluetooth.add("Enable");
 		bluetooth.add("Disable");
 
-		listDataChild.put(listDataHeader.get(0), connectionInfo); // Header,
-																	// Child
-																	// data
+		listDataChild.put(listDataHeader.get(0), connectionInfo);
 		listDataChild.put(listDataHeader.get(1), audio);
 		listDataChild.put(listDataHeader.get(2), display);
 		listDataChild.put(listDataHeader.get(3), bluetooth);
@@ -251,6 +241,11 @@ public class ChangeSettingActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * This method is responsible for getting a WiFi password
+	 * from a user given the network name.
+	 * @param networkName
+	 */
 	@SuppressWarnings("deprecation")
 	private void getWiFiPasswordFromUser(final String networkName) {
 		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
@@ -265,14 +260,14 @@ public class ChangeSettingActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				mPassword = input.getText().toString().trim();
 				prepareNfcString();
-				toast(networkName + " selected to the NFC");
+				toast(networkName + " selected");
 			}
 		});
 		alertDialog.show();
 	}
 	
 	/**
-	 * 
+	 * This method returns the password type of a WiFi network
 	 * @param wifiConfig
 	 * @return password type
 	 */
@@ -287,6 +282,10 @@ public class ChangeSettingActivity extends Activity {
 	    return (wifiConfig.wepKeys[0] != null) ? "WEP" : "OPEN";
 	}
 	
+	/**
+	 * This method prepares a NFC string to be written
+	 * to the tag.
+	 */
 	private void prepareNfcString(){
 		StringBuilder build = new StringBuilder();
 		build.append("RCSA:\n");
@@ -300,6 +299,10 @@ public class ChangeSettingActivity extends Activity {
 		WelcomeActivity.nfcWriteData = build.toString();
 	}
 
+	/**
+	 * This method puts a toast on the screen
+	 * @param message
+	 */
 	private void toast(String message) {
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}

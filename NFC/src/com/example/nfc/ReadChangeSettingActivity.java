@@ -13,8 +13,10 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 /**
- * 
- * @author Arjun Passi
+ * This class is responsible for parsing the NFC data
+ * from the tag. After the data is parsed the WiFi,
+ * Blue tooth, Audio, and Display settings are changed.
+ * @author Arjun Passi, Siddartha Tondapu
  *
  */
 public class ReadChangeSettingActivity extends Activity {
@@ -92,36 +94,73 @@ public class ReadChangeSettingActivity extends Activity {
 			bluetoothAdapter.disable();
 	}
 	
+	/**
+	 * This method returns the Audio setting on the tag
+	 * @param nfcData
+	 * @return
+	 */
 	private String getAudioSetting(String nfcData){
 		String[] list = nfcData.split("\n");
 		return list[1].replace("Audio ", "");
 	}
 	
+	/**
+	 * This method returns the display setting on the tag
+	 * @param nfcData
+	 * @return
+	 */
 	private String getDisplaySetting(String nfcData){
 		String[] list = nfcData.split("\n");
 		return list[2].replace("Display ", "");
 	}
 	
+	/**
+	 * This method returns the blue tooth setting
+	 * @param nfcData
+	 * @return
+	 */
 	private String getBluetoothSetting(String nfcData){
 		String[] list = nfcData.split("\n");
 		return list[3].replace("BT ", "");
 	}
 	
+	/**
+	 * This method returns the SSID of the network
+	 * @param nfcData
+	 * @return
+	 */
 	private String getSSID(String nfcData){
 		String[] list = nfcData.split("\n");
 		return list[4].replace("SSID ", "");
 	}
 	
+	/**
+	 * This method returns the password of the network
+	 * @param nfcData
+	 * @return
+	 */
 	private String getPassword(String nfcData){
 		String[] list = nfcData.split("\n");
 		return list[5].replace("PASS ", "");
 	}
 	
+	/**
+	 * This methods returns the security of the network
+	 * @param nfcData
+	 * @return
+	 */
 	private String getSecurityType(String nfcData){
 		String[] list = nfcData.split("\n");
 		return list[6].replace("SEC ", "");
 	}
 	
+	/**
+	 * This method attempts to connect to the provided network.
+	 * The network security type must be WPA-PSK
+	 * @param SSID
+	 * @param security
+	 * @param password
+	 */
 	private void connectWiFi(String SSID, String security, String password){
 		
 		WifiManager mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -146,9 +185,8 @@ public class ReadChangeSettingActivity extends Activity {
 		
 		else if(security.equals("OPEN")){}
 		
-		else{
+		else
 			return;
-		}
 		
 		mWifiManager.addNetwork(wc);
 		List<WifiConfiguration> list = mWifiManager.getConfiguredNetworks();

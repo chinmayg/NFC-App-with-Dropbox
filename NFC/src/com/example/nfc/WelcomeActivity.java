@@ -5,7 +5,6 @@ import java.nio.charset.Charset;
 
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -28,13 +27,10 @@ import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,8 +56,6 @@ public class WelcomeActivity extends TabActivity {
 	private IntentFilter[] ndefExchangeFilters_;
 
 	static String nfcWriteData = "";
-	
-	private boolean readTag = false;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,16 +71,14 @@ public class WelcomeActivity extends TabActivity {
 
 	}
 
+	/**
+	 * This method is called every time the tag is brought
+	 * closer to the phone.
+	 */
 	@Override
 	protected void onNewIntent(Intent intent) {
-		if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+		if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction()))
 			detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-			String nfcData = intent
-					.getParcelableExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-			// Display the data on the tag
-			Toast.makeText(this, detectedTag.toString() + nfcData,
-					Toast.LENGTH_SHORT).show();
-		}
 
 		else if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
 			detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -113,6 +105,16 @@ public class WelcomeActivity extends TabActivity {
 				mReadTagFilters, null);
 	}
 
+	/**
+	 * This piece of code writes the string data on a tag.
+	 * It was taken from
+	 * https://shanetully.com/2012/12/
+	 * writing-custom-data-to-nfc-tags-with-android-example/
+	 * @param context
+	 * @param tag
+	 * @param data
+	 * @return
+	 */
 	@SuppressLint("NewApi")
 	public static boolean writeTag(Context context, Tag tag, String data) {
 		if(tag == null)
@@ -185,6 +187,11 @@ public class WelcomeActivity extends TabActivity {
 		return false;
 	}
 
+	/**
+	 * This method prompts the user an option to read and process
+	 * the nfc tag.
+	 * @param nfcData
+	 */
 	private void setTagChooseRead(final String nfcData){
 		AlertDialog.Builder readBuilder = new AlertDialog.Builder(this);
 		readBuilder.setTitle("NFC Tag Discovered")
@@ -194,7 +201,6 @@ public class WelcomeActivity extends TabActivity {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						readTag = true;
 						setUp(nfcData);
 						dialog.dismiss();
 					}
@@ -203,7 +209,6 @@ public class WelcomeActivity extends TabActivity {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int id) {
-								readTag = false;
 								dialog.dismiss();
 							}
 						});
@@ -213,6 +218,10 @@ public class WelcomeActivity extends TabActivity {
 			readAlert.show();
 	}
 	
+	/**
+	 * This method is called to process the NFC data read from the tag.
+	 * @param nfcData
+	 */
 	private void setUp(String nfcData){
 		int first = nfcData.indexOf(":");
 		if (first < 0)
@@ -287,7 +296,7 @@ public class WelcomeActivity extends TabActivity {
 				
 				else
 					Toast.makeText(WelcomeActivity.this,
-							"Writing on Tag succedded!", Toast.LENGTH_SHORT).show();
+							"Writing on Tag succeeded!", Toast.LENGTH_SHORT).show();
 				mDialog.cancel();
 			}
 

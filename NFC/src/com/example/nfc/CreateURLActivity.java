@@ -1,3 +1,11 @@
+/*
+ * Created by Chinmay Ghotkar
+ * Date Modified:12/1/2013
+ * 
+ * This activity lets give the user a button to choose a file from Dropbox App
+ *
+ */
+
 package com.example.nfc;
 
 import android.app.Activity;
@@ -10,7 +18,6 @@ import android.widget.Button;
 
 import com.dropbox.chooser.android.DbxChooser;
 import com.dropbox.client2.DropboxAPI;
-
 
 public class CreateURLActivity extends Activity {
 	
