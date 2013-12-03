@@ -19,6 +19,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//-------------------------------------------------------------------------
+/**
+*  This activity is hidden till a NFC chip is brought closer
+*  Once blown up, it downloads the file from dropbox and decrypts it
+*
+*  @author Bishwamoy Sinha Roy
+*  @version Nov 24, 2013
+*/
 public class DecryptActivity extends Activity implements Security {
 
 	private TextView file_out;
@@ -34,6 +42,7 @@ public class DecryptActivity extends Activity implements Security {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_decrypt);
 
+		// get intent to access the extras (has the NFC data)
 		Intent intent = getIntent();
 		Bundle bundle = intent.getExtras();
 
@@ -59,7 +68,10 @@ public class DecryptActivity extends Activity implements Security {
 			}
 		});
 
+		// make sure NFCdata is readable
 		if (bundle.containsKey("nfcData")) {
+			// get data from the NFC
+			// key and url (KVPs)
 			String nfcData = bundle.getString("nfcData");
 			String[] info = nfcData.split("\n");
 			if (info.length != 3) {
@@ -102,13 +114,20 @@ public class DecryptActivity extends Activity implements Security {
 		return true;
 	}
 
+	// -------------------------------------------------------------------------
+	/**
+	 *  This method is called by the download task once the file has been downloaded
+	 *  This method decrypts file.
+	 */
 	public void handleSecurity(String fileLoc, String fileName) {
+		// make sure external storage is reachable
 		if (!isExternalStorageReadable() && !isExternalStorageWritable()) {
 			file_out.setText("Cant write to external storage!!!");
 			return;
 		}
 		this.decryptedFile = this.getExternalCacheDir().getAbsolutePath() + "/"
 				+ "encrypted" + fileName.substring(1);
+		// decrypt file
 		EncryptionHelper helper = new EncryptionHelper(10);
 		boolean success = helper.decrypt(fileLoc, this.decryptedFile, key);
 		if (success) {
@@ -116,6 +135,7 @@ public class DecryptActivity extends Activity implements Security {
 		} else {
 			this.file_out.setText("Error decrypting!");
 		}
+		// set buttons as accessible
 		this.returnToPrev.setEnabled(true);
 		this.seePreview.setEnabled(true);
 	}
@@ -139,7 +159,12 @@ public class DecryptActivity extends Activity implements Security {
 		return false;
 	}
 
+	//-------------------------------------------------------------------------
+	/**
+	*  Used to show a preview of the decrypted file.
+	*/
 	public void showPreview(String fileLoc) {
+		// iterate through file and print a maximum of 6 lines
 		try {
 			file_out.setText("Preview:" + "\n");
 			BufferedReader file = new BufferedReader(new FileReader(fileLoc));
@@ -151,7 +176,6 @@ public class DecryptActivity extends Activity implements Security {
 			}
 			file.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			file_out.append("Problem accessing file!");
 			e.printStackTrace();
 		}

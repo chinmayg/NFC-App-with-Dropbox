@@ -16,13 +16,19 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.dropbox.chooser.android.DbxChooser;
 
 import encyrption.EncryptionHelper;
 import encyrption.Security;
 
+//-------------------------------------------------------------------------
+/**
+*  The activity that requests the user to choose a file from dropbox, downloads
+*  the chosen file, encrypts the file, and uploads it to Dropbox.
+*
+*  @author Bishwamoy Sinha Roy and Chinmay Ghotkar
+*  @version Nov 20, 2013
+*/
 public class EncryptActivity extends Activity implements Security {
 
 	private Button openFile;
@@ -44,6 +50,7 @@ public class EncryptActivity extends Activity implements Security {
 		mChooser = new DbxChooser(APP_KEY);
 		this.openFile = (Button) findViewById(R.id.button_openFile);
 		this.openFile.setOnClickListener(new OnClickListener() {
+			// clicking the button initiates the Dropbox file chooser pop-up
 			@Override
 			public void onClick(View v) {
 				mChooser.forResultType(DbxChooser.ResultType.DIRECT_LINK)
@@ -52,11 +59,16 @@ public class EncryptActivity extends Activity implements Security {
 		});
 	}
 
+	// -------------------------------------------------------------------------
+	/**
+	 *  This method is called once the user has chosen a file from the dropbox
+	 *  chooser
+	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
+		switch (requestCode) {		
 		case FILE_SELECT_CODE:
 			if (resultCode == RESULT_OK) {
-
+				// get result (the link of the file) and download file.
 				DbxChooser.Result result = new DbxChooser.Result(data);
 				fileDown = result.getLink().toString().substring(56);
 				fileDown = fileDown.replace("%20", " ");
@@ -70,32 +82,38 @@ public class EncryptActivity extends Activity implements Security {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
+	// -------------------------------------------------------------------------
+	/**
+	 *  This method is called by the download task once the file has been downloaded
+	 *  This method encrypts file.
+	 */
 	public void handleSecurity(String fileLoc, String fileName) {
+		// create destination path in external
 		String encryptedName = "encrypted" + fileName.substring(1);
-		String dest = this.getExternalCacheDir().getAbsolutePath() + "/"
+		String dest = this.getCacheDir().getAbsolutePath() + "/"
 				+ encryptedName;
+		// object to encrypt file
 		EncryptionHelper helper = new EncryptionHelper(10);
 		String key = helper.encrypt(fileLoc, dest);
-		dispString("Please Program NFC with key: " + key);
 		// upload file at destination
 		String DBPath = "AppUploads/";
 		DBUploadTask up = new DBUploadTask(this, DBPath, new File(dest));
 		up.execute();
-
-		// Program NFC tag with DBPath and key
-		StringBuilder toNFC = new StringBuilder();
-		toNFC.append("DA:\n");
-		toNFC.append("key:" + key + "\n");
-		toNFC.append("url:/" + DBPath + encryptedName + "\n");
-
-		WelcomeActivity.nfcWriteData = toNFC.toString();
 		
-		toNFC = new StringBuilder();
-		toNFC.append("KEY:" + key + "\n");
-		toNFC.append("URL:/" + DBPath + encryptedName + "\n");
-		dispString(toNFC.toString());
-	}
+		// write appt. string to NFC
+		writeNFC(key, "/" + DBPath + encryptedName);
 
+		// display the key and the url to the user
+		StringBuilder toScreen = new StringBuilder();
+		toScreen.append("KEY:" + key + "\n");
+		toScreen.append("URL:/" + DBPath + encryptedName + "\n");
+		dispString(toScreen.toString());
+	}
+	
+	// -------------------------------------------------------------------------
+	/**
+	 *  This method is called to display text on screen to user
+	 */
 	public void dispString(String message) {
 		if (message.length() == 0) {
 			out.setText("", TextView.BufferType.NORMAL);
@@ -104,7 +122,26 @@ public class EncryptActivity extends Activity implements Security {
 		out.setText(message, TextView.BufferType.NORMAL);
 		out.setMovementMethod(LinkMovementMethod.getInstance());
 	}
+	
+	// -------------------------------------------------------------------------
+	/**
+	 *  This method is called to write the key and url to the NFC
+	 *  Basically modifies a static string in welcomeActivity
+	 */
+	public void writeNFC(String key, String URL)
+	{
+		StringBuilder toNFC = new StringBuilder();
+		toNFC.append("DA:\n");
+		toNFC.append("key:" + key + "\n");
+		toNFC.append("url:" + URL + "\n");
 
+		WelcomeActivity.nfcWriteData = toNFC.toString();
+	}
+
+	// -------------------------------------------------------------------------
+	/**
+	 *  
+	 */
 	public static String getPath(Context context, Uri uri)
 			throws URISyntaxException {
 		if ("content".equalsIgnoreCase(uri.getScheme())) {
