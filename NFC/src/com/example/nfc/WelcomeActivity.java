@@ -17,6 +17,8 @@ import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+import android.nfc.NfcEvent;
 import android.nfc.Tag;
 import android.nfc.TagLostException;
 import android.nfc.tech.Ndef;
@@ -26,6 +28,7 @@ import android.os.Parcelable;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -45,8 +48,9 @@ import android.widget.Toast;
  */
 @SuppressLint("NewApi")
 @SuppressWarnings("deprecation")
-public class WelcomeActivity extends TabActivity {
+public class WelcomeActivity extends TabActivity implements CreateNdefMessageCallback{
 
+	final String TAG = "WelcomeActivity";
 	private NfcAdapter mNfcAdapter;
 	private PendingIntent mPendingIntent;
 	private IntentFilter[] mReadTagFilters;
@@ -56,6 +60,10 @@ public class WelcomeActivity extends TabActivity {
 	private IntentFilter[] ndefExchangeFilters_;
 
 	static String nfcWriteData = "";
+	
+	private String nfcData;
+	
+	private AlertDialog readAlert;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,9 +94,9 @@ public class WelcomeActivity extends TabActivity {
 			Parcelable[] rawMsgs = intent
 					.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
 			NdefRecord relayRecord = ((NdefMessage) rawMsgs[0]).getRecords()[0];
-			String nfcData = new String(relayRecord.getPayload());
-			
-			setTagChooseRead(nfcData);
+			nfcData = new String(relayRecord.getPayload());
+			Log.i(TAG, "NFC_DATA:\n" + nfcData);
+			setChooseRead();
 		}
 	}
 
@@ -101,7 +109,19 @@ public class WelcomeActivity extends TabActivity {
 
 	protected void onResume() {
 		super.onResume();
-		mNfcAdapter.enableForegroundDispatch(this, mPendingIntent,
+		/*
+		// Check to see that the Activity started due to an Android Beam
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            Intent intent = getIntent();
+            Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
+                    NfcAdapter.EXTRA_NDEF_MESSAGES);
+            // only one message sent during the beam
+            NdefRecord relayRecord = ((NdefMessage) rawMsgs[0]).getRecords()[0];
+			String nfcData = new String(relayRecord.getPayload());
+			setChooseRead(nfcData, "Device");
+        } */
+        
+        mNfcAdapter.enableForegroundDispatch(this, mPendingIntent,
 				mReadTagFilters, null);
 	}
 
@@ -192,16 +212,17 @@ public class WelcomeActivity extends TabActivity {
 	 * the nfc tag.
 	 * @param nfcData
 	 */
-	private void setTagChooseRead(final String nfcData){
+	private void setChooseRead(){
+
 		AlertDialog.Builder readBuilder = new AlertDialog.Builder(this);
-		readBuilder.setTitle("NFC Tag Discovered")
+		readBuilder.setTitle("NFC Device/Tag Discovered")
 				.setMessage("Do you want to read from the tag?")
 				.setCancelable(true)
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						setUp(nfcData);
+						setUp();
 						dialog.dismiss();
 					}
 				})
@@ -213,7 +234,8 @@ public class WelcomeActivity extends TabActivity {
 							}
 						});
 
-		AlertDialog readAlert = readBuilder.create();
+		if(readAlert == null)
+			readAlert = readBuilder.create();
 		if(!readAlert.isShowing())
 			readAlert.show();
 	}
@@ -222,7 +244,7 @@ public class WelcomeActivity extends TabActivity {
 	 * This method is called to process the NFC data read from the tag.
 	 * @param nfcData
 	 */
-	private void setUp(String nfcData){
+	private void setUp(){
 		int first = nfcData.indexOf(":");
 		if (first < 0)
 			first = 0;
@@ -370,6 +392,26 @@ public class WelcomeActivity extends TabActivity {
 		} catch (IntentFilter.MalformedMimeTypeException e) {
 		}
 		ndefExchangeFilters_ = new IntentFilter[] { ndefDetected };
+		mNfcAdapter.setNdefPushMessageCallback(this, this);
+	}
+
+	@Override
+	public NdefMessage createNdefMessage(NfcEvent arg0) {
+		String text = WelcomeActivity.nfcWriteData;
+        NdefMessage msg = new NdefMessage(
+                new NdefRecord[] { NdefRecord.createMime(
+                        "application/com.example.nfc", text.getBytes())
+         /**
+          * The Android Application Record (AAR) is commented out. When a device
+          * receives a push with an AAR in it, the application specified in the AAR
+          * is guaranteed to run. The AAR overrides the tag dispatch system.
+          * You can add it back in to guarantee that this
+          * activity starts when receiving a beamed message. For now, this code
+          * uses the tag dispatch system.
+          */
+          //,NdefRecord.createApplicationRecord("com.example.android.beam")
+        });
+        return msg;
 	}
 
 }
