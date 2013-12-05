@@ -109,17 +109,6 @@ public class WelcomeActivity extends TabActivity implements CreateNdefMessageCal
 
 	protected void onResume() {
 		super.onResume();
-		/*
-		// Check to see that the Activity started due to an Android Beam
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            Intent intent = getIntent();
-            Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
-                    NfcAdapter.EXTRA_NDEF_MESSAGES);
-            // only one message sent during the beam
-            NdefRecord relayRecord = ((NdefMessage) rawMsgs[0]).getRecords()[0];
-			String nfcData = new String(relayRecord.getPayload());
-			setChooseRead(nfcData, "Device");
-        } */
         
         mNfcAdapter.enableForegroundDispatch(this, mPendingIntent,
 				mReadTagFilters, null);
@@ -409,7 +398,6 @@ public class WelcomeActivity extends TabActivity implements CreateNdefMessageCal
           * activity starts when receiving a beamed message. For now, this code
           * uses the tag dispatch system.
           */
-          //,NdefRecord.createApplicationRecord("com.example.android.beam")
         });
         return msg;
 	}
