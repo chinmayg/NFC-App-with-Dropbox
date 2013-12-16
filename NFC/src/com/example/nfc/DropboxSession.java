@@ -35,8 +35,8 @@ public class DropboxSession {
 	// Note that this is a really insecure way to do this, and you shouldn't
 	// ship code which contains your key & secret in such an obvious way.
 	// Obfuscation is good.
-	final static private String APP_KEY = "tez4j42gfqklqyr";
-	final static private String APP_SECRET = "33q2a3lj12d128e";
+	final static private String APP_KEY = "SECRET";
+	final static private String APP_SECRET = "SECRET";
 
 	// If you'd like to change the access type to the full Dropbox instead of
 	// an app folder, change this value.
